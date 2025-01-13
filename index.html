@@ -5,262 +5,594 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>명지국제자유방 이웃점빵</title>
    <style>
-       body {
-           font-family: 'Nanum Gothic', sans-serif;
-           max-width: 1200px;
-           margin: 0 auto;
-           padding: 20px;
-           background-color: #f5f5f5;
-       }
-       .store-card {
-           background-color: white;
-           border-radius: 10px;
-           padding: 20px;
-           margin-bottom: 20px;
-           box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-       }
-       .store-header {
-           border-bottom: 2px solid #f0f0f0;
-           margin-bottom: 15px;
-           padding-bottom: 10px;
-       }
-       .store-name {
-           font-size: 1.5em;
-           color: #2c3e50;
-           margin: 0;
-       }
-       .nickname {
-           color: #7f8c8d;
-           font-size: 0.9em;
-       }
-       .store-info {
-           display: grid;
-           grid-template-columns: 120px auto;
-           gap: 10px;
-           line-height: 1.6;
-       }
-       .label {
-           font-weight: bold;
-           color: #34495e;
-       }
-       .benefit {
-           color: #e74c3c;
-       }
-       .address {
-           color: #666;
-       }
-       .code {
-           color: #27ae60;
-           font-weight: bold;
-       }
-   </style>
+        :root {
+            --primary-color: #4A90E2;
+            --accent-color: #FF6B6B;
+            --background-color: #F8F9FA;
+            --header-gradient: linear-gradient(135deg, #4A90E2, #357ABD);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+            background-color: var(--background-color);
+            padding-bottom: 60px;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: var(--header-gradient);
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            color: white;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .category-tabs {
+            display: flex;
+            overflow-x: hidden; /* 가로 스크롤바 숨기기 */
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 20px;
+            margin-right: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .tab.active {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .store-list {
+            padding: 15px;
+            display: grid; /* grid로 변경 */
+            grid-template-columns: repeat(1, 1fr); /* 기본적으로 1열로 설정 */
+            gap: 15px; /* 항목 간의 간격 설정 */
+        }
+
+        .store-accordion {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+            display: flex; /* 아코디언을 flex로 설정 */
+            flex-direction: column; /* 세로로 쌓이도록 설정 */
+        }
+
+        .store-accordion:hover {
+            transform: translateY(-2px);
+        }
+
+        .store-header {
+            padding: 15px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            cursor: pointer;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .store-name {
+            font-size: 1.1em;
+            color: #E95E2B; /* 밝은 주황으로 변경 */
+            margin-bottom: 4px;
+        }
+
+        .nickname {
+            color: #868E96;
+            font-size: 0.9em;
+            background: #F1F3F5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .toggle-btn {
+            transition: transform 0.3s ease;
+            font-size: 1.2em;
+            padding: 0 5px;
+            color: var(--primary-color);
+        }
+
+        .toggle-btn.active {
+            transform: rotate(180deg);
+        }
+
+        .store-content {
+            display: none;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background: linear-gradient(to bottom, #fff, #f8f9fa);
+        }
+
+        .store-content.active {
+            display: block;
+        }
+
+        .info-row {
+            margin-bottom: 8px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #495057;
+            display: inline-block;
+            width: 80px;
+        }
+
+        .benefit {
+            color: var(--accent-color);
+        }
+
+        .code {
+            color: #02C39A;
+        }
+
+        [data-category="음식/카페"] .store-header {
+            border-left-color: #FF6B6B;  /* 따뜻한 레드 */
+        }
+
+        [data-category="생활/편의"] .store-header {
+            border-left-color: #4A90E2;  /* 차분한 블루 */
+        }
+
+        [data-category="건강/뷰티"] .store-header {
+            border-left-color: #FDA7DF;  /* 부드러운 핑크 */
+        }
+
+        [data-category="문화/기타"] .store-header {
+            border-left-color: #4ECDC4;  /* 밝은 민트 */
+        }
+
+        /* PC 스타일 */
+        @media (min-width: 768px) {
+            .store-list {
+                grid-template-columns: repeat(2, 1fr); /* 두 개의 업체가 가로로 보이도록 설정 */
+            }
+        }
+
+        /* 모바일 스타일 */
+        @media (max-width: 767px) {
+            .store-list {
+                grid-template-columns: 1fr; /* 하나의 업체가 보이도록 설정 */
+            }
+        }
+    </style>
 </head>
 <body>
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">송이네국수 <span class="nickname">[중흥에듀오션/붐]</span></h2>
-       </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>국수, 전, 굴국밥 등</span>
-           
-           <span class="label">혜택</span>
-           <span class="benefit">계란김밥 or 음료</span>
-           
-           <span class="label">암호</span>
-           <span class="code">새송이</span>
-           
-           <span class="label">연락처</span>
-           <span>0507-1497-3464</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산 강서구 명지국제6로242번길 16-8 1층</span>
+   <div class="header">
+       <input type="text" class="search-bar" placeholder="업체명 또는 키워드로 검색...">
+       <div class="category-tabs">
+           <button class="tab active">전체</button>
+           <button class="tab">음식/카페</button>
+           <button class="tab">생활/편의</button>
+           <button class="tab">건강/뷰티</button>
+           <button class="tab">문화/기타</button>
        </div>
    </div>
 
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">모옥살 <span class="nickname">[중흥1차/경시사]</span></h2>
+   <div class="store-list">
+       <div class="store-accordion" data-category="음식/카페">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">송이네국수</div>
+                   <div class="nickname">[중흥에듀오션/붐]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>국수, 전, 굴국밥 등</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">혜택</span>
+                   <span class="benefit">계란김밥 or 음료</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">암호</span>
+                   <span class="code">새송이</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>0507-1497-3464</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산 강서구 명지국제6로242번길 16-8 1층</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>고깃집</span>
-           
-           <span class="label">혜택</span>
-           <span class="benefit">고기1인분 or 주류(하이볼 가능) 택 1</span>
-           
-           <span class="label">암호</span>
-           <span class="code">네이버 예약 시 요청사항: 국신 자유방</span>
-           
-           <span class="label">연락처</span>
-           <span>0507-1467-9871</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산 강서구 명지국제2로 27 제1층 109호</span>
-       </div>
-   </div>
 
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">문현곱창 명지국제신도시점 <span class="nickname">[호반2차/퍼플]</span></h2>
+       <div class="store-accordion" data-category="음식/카페">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">모옥살</div>
+                   <div class="nickname">[중흥1차/경시사]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>고깃집</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">혜택</span>
+                   <span class="benefit">고기1인분 or 주류(하이볼 가능) 택 1</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">예약</span>
+                   <span class="code">네이버 예약 시 요청사항: 국신 자유방</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>0507-1467-9871</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산 강서구 명지국제2로 27 제1층 109호</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>막창, 뒷고기</span>
-           
-           <span class="label">혜택</span>
-           <span class="benefit">뒷고기대패 100g or 주류 택 1</span>
-           
-           <span class="label">암호</span>
-           <span class="code">문꼴통</span>
-           
-           <span class="label">연락처</span>
-           <span>0507-1449-0295</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산 강서구 명지국제8로 287 오성빌딩 3F</span>
-       </div>
-   </div>
 
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">애터미 <span class="nickname">[금강2차]</span></h2>
+       <div class="store-accordion" data-category="음식/카페">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">문현곱창 명지국제신도시점</div>
+                   <div class="nickname">[호반2차/퍼플]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>막창, 뒷고기</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">혜택</span>
+                   <span class="benefit">뒷고기대패 100g or 주류 택 1</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">암호</span>
+                   <span class="code">문꼴통</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>0507-1449-0295</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산 강서구 명지국제8로 287 오성빌딩 3F</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>애터미 제품 문의</span>
-           
-           <span class="label">혜택</span>
-           <span class="benefit">첫 구매시 애터미 칫솔 선물</span>
-           
-           <span class="label">연락처</span>
-           <span>010-3345-9897</span>
-       </div>
-   </div>
 
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">엄궁 68번 투린플라워 <span class="nickname">[더힐시그니처/슈슈]</span></h2>
+       <div class="store-accordion" data-category="음식/카페">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">안동꿀돼지</div>
+                   <div class="nickname">[금강2차/유리엄마]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>돼지고기, 밀면 등</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">혜택</span>
+                   <span class="benefit">밀면 또는 된장찌개</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">암호</span>
+                   <span class="code">유리친군데요~</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>051-203-3320</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산 강서구 명지국제11로 58 안동꿀돼지</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>꽃바구니, 화환, 꽃다발</span>
-           
-           <span class="label">혜택</span>
-           <span class="benefit">서비스 꽃</span>
-           
-           <span class="label">연락처</span>
-           <span>0507-1325-4922</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산 사상구 강변대로 512 1층 68호</span>
-       </div>
-   </div>
 
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">우아한몸&선 샵인샵 <span class="nickname">[이편한세상/아이돌]</span></h2>
+       <div class="store-accordion" data-category="생활/편의">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">투린플라워</div>
+                   <div class="nickname">[더힐시그니처/슈]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>꽃바구니, 화환, 꽃다발</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">혜택</span>
+                   <span class="benefit">서비스 꽃</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>0507-1325-4922</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산 사상구 강변대로 512 1층 68호</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>속눈썹펌 전문</span>
-           
-           <span class="label">혜택</span>
-           <span class="benefit">눈이 더커지는 블랙틴팅 서비스(5천원 상당)</span>
-           
-           <span class="label">연락처</span>
-           <span>010-7592-0102</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산 강서구 명지국제2로 80 2층 70호 아이돌</span>
-       </div>
-   </div>
 
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">마인드휘트니스 부산명지점 <span class="nickname">[대방디엠/마이]</span></h2>
+       <div class="store-accordion" data-category="생활/편의">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">조은도어텍</div>
+                   <div class="nickname">[더웨스턴/꼼찌]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>자동문, 강화문</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>0507-1432-5778</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산 강서구 유통단지1로 41 129동 1층 118호</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>운동 전문</span>
-           
-           <span class="label">혜택</span>
-           <span class="benefit">운동복 월 1만원 무료쿠폰 증정</span>
-           
-           <span class="label">연락처</span>
-           <span>0507-1427-0797</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산 강서구 명지국제8로10번길 38 312호, 316호</span>
-       </div>
-   </div>
 
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">조은도어텍 <span class="nickname">[더웨스턴/꼼찌]</span></h2>
+       <div class="store-accordion" data-category="생활/편의">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">루마버텍스 사하다대점</div>
+                   <div class="nickname">[호반베르디움1차/탄핵핑]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>차량 썬팅, 블박, 광택</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>051-266-7204</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산 사하구 사하로 107</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>자동문, 강화문</span>
-           
-           <span class="label">연락처</span>
-           <span>0507-1432-5778</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산 강서구 유통단지1로 41 129동 1층 118호</span>
-       </div>
-   </div>
 
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">루마버텍스 사하다대점 <span class="nickname">[호반베르디움1차/탄핵핑]</span></h2>
+       <div class="store-accordion" data-category="생활/편의">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">뮤즈</div>
+                   <div class="nickname">[호반베르디움2차/민턴]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>의류</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산광역시 금정구 구서동</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>차량 썬팅, 블박, 광택</span>
-           
-           <span class="label">연락처</span>
-           <span>051-266-7204</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산 사하구 사하로 107</span>
-       </div>
-   </div>
 
-   <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">뮤즈 <span class="nickname">[호반베르디움2차/민턴]</span></h2>
+       <div class="store-accordion" data-category="건강/뷰티">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">애터미</div>
+                   <div class="nickname">[금강2차]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>애터미 제품 문의</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">혜택</span>
+                   <span class="benefit">첫 구매시 애터미 칫솔 선물</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>010-3345-9897</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>옷가게</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산광역시 금정구 구서동</span>
-       </div>
-   </div>
 
-      <div class="store-card">
-       <div class="store-header">
-           <h2 class="store-name">안동꿀돼지 <span class="nickname">[금강2차/유리엄마]</span></h2>
+       <div class="store-accordion" data-category="건강/뷰티">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">우아한몸&선 샵인샵</div>
+                   <div class="nickname">[이편한세상/아이돌]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>속눈썹펌 전문</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">혜택</span>
+                   <span class="benefit">눈이 더커지는 블랙틴팅 서비스(5천원 상당)</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>010-7592-0102</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산 강서구 명지국제2로 80 2층 70호 아이돌</span>
+               </div>
+           </div>
        </div>
-       <div class="store-info">
-           <span class="label">설명</span>
-           <span>돼지고기, 밀면 등</span>
-           
-           <span class="label">혜택</span>
-           <span class="benefit">밀면 또는 된장찌개</span>
-           
-           <span class="label">암호</span>
-           <span class="code">유리친군데요~</span>
-           
-           <span class="label">연락처</span>
-           <span>051-203-3320</span>
-           
-           <span class="label">주소</span>
-           <span class="address">부산 강서구 명지국제11로 58 안동꿀돼지</span>
-       </div>
-   </div>
 
+       <div class="store-accordion" data-category="건강/뷰티">
+           <div class="store-header">
+               <div>
+                   <div class="store-name">마인드휘트니스 부산명지점</div>
+                   <div class="nickname">[대방디엠/마이]</div>
+               </div>
+               <div class="toggle-btn">▾</div>
+           </div>
+           <div class="store-content">
+               <div class="info-row">
+                   <span class="label">설명</span>
+                   <span>운동 전문</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">혜택</span>
+                   <span class="benefit">운동복 월 1만원 무료쿠폰 증정</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">연락처</span>
+                   <span>0507-1427-0797</span>
+               </div>
+               <div class="info-row">
+                   <span class="label">주소</span>
+                   <span>부산 강서구 명지국제8로10번길 38 312호, 316호</span>
+               </div>
+           </div>
+       </div>
+
+        <!-- 나머지 업체들도 같은 형식으로 반복 -->
+    </div>
+
+    <script>
+       // 아코디언 기능
+        document.querySelectorAll('.store-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const storeAccordion = header.closest('.store-accordion');
+                const content = header.nextElementSibling;
+                const toggleBtn = header.querySelector('.toggle-btn');
+
+                // 화면 크기에 따라 아코디언 동작 조정
+                const isMobile = window.innerWidth <= 767;
+                if (isMobile) {
+                    // 모바일에서는 개별 아코디언만 열 수 있도록
+                    const isOpening = !content.classList.contains('active');
+                    document.querySelectorAll('.store-content').forEach(itemContent => {
+                        itemContent.classList.remove('active');
+                    });
+                    document.querySelectorAll('.toggle-btn').forEach(itemToggleBtn => {
+                        itemToggleBtn.classList.remove('active');
+                    });
+                    if (isOpening) {
+                        content.classList.add('active');
+                        toggleBtn.classList.add('active');
+                    }
+                } else {
+                    // PC에서는 같은 행의 아코디언을 함께 열 수 있도록
+                    const rowIndex = Math.floor([...storeAccordion.parentElement.children].indexOf(storeAccordion) / 2);
+                    const items = document.querySelectorAll('.store-accordion');
+                    const rowItems = Array.from(items).filter((item, index) => Math.floor(index / 2) === rowIndex);
+                    
+                    const isOpening = !content.classList.contains('active');
+                    rowItems.forEach(item => {
+                        const itemContent = item.querySelector('.store-content');
+                        const itemToggleBtn = item.querySelector('.toggle-btn');
+                        
+                        if (isOpening) {
+                            itemContent.classList.add('active');
+                            itemToggleBtn.classList.add('active');
+                        } else {
+                            itemContent.classList.remove('active');
+                            itemToggleBtn.classList.remove('active');
+                        }
+                    });
+                    
+                    // 다른 행의 열린 아이템들 닫기
+                    items.forEach((item, index) => {
+                        if (Math.floor(index / 2) !== rowIndex) {
+                            item.querySelector('.store-content').classList.remove('active');
+                            item.querySelector('.toggle-btn').classList.remove('active');
+                        }
+                    });
+                }
+            });
+        });
+
+        // 검색 기능
+        const searchBar = document.querySelector('.search-bar');
+        searchBar.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.store-accordion').forEach(store => {
+                const text = store.textContent.toLowerCase();
+                store.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+
+        // 카테고리 탭 기능
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const category = tab.textContent;
+                document.querySelectorAll('.store-accordion').forEach(store => {
+                    if (category === '전체' || store.dataset.category === category) {
+                        store.style.display = 'block';
+                    } else {
+                        store.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
