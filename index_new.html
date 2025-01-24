@@ -221,13 +221,13 @@
 
         // 프론트엔드 JavaScript 수정
         function fetchStores(category = '전체', searchTerm = '') {
-            let url = 'http://ecron.iptime.org:60890/api/stores';
+            let url = 'https://gw.ecron.co.kr:60890/api/stores';
             
             if (category !== '전체' && !searchTerm) {
                 // 쿼리 파라미터로 변경
-                url = `http://ecron.iptime.org:60890/api/stores/category?name=${encodeURIComponent(category)}`;
+                url = `https://gw.ecron.co.kr:60890/api/stores/category?name=${encodeURIComponent(category)}`;
             } else if (searchTerm) {
-                url = `http://ecron.iptime.org:60890/api/stores/search?term=${encodeURIComponent(searchTerm)}`;
+                url = `https://gw.ecron.co.kr:60890/api/stores/search?term=${encodeURIComponent(searchTerm)}`;
             }
 
             fetch(url)
