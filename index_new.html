@@ -53,6 +53,41 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
     
     <script>
+        // 임시 JSON 데이터
+        const tempStores = [
+            {
+                _id: '1',
+                name: '송이네국수',
+                nickname: '[중흥에듀오션/붐]',
+                category: '음식/카페',
+                description: '국수, 전, 굴국밥 등',
+                benefit: '계란김밥 or 음료',
+                code: '새송이',
+                contact: '0507-1497-3464',
+                address: '부산 강서구 명지국제6로242번길 16-8 1층'
+            },
+            {
+                _id: '2',
+                name: '우아한몸&선 샵인샵',
+                nickname: '[이편한세상/아이돌]',
+                category: '건강/뷰티',
+                description: '속눈썹펌 전문',
+                benefit: '눈이 더커지는 블랙틴팅 서비스(5천원 상당)',
+                contact: '010-7592-0102',
+                address: '부산 강서구 명지국제2로 80 2층 70호 아이돌'
+            },
+            {
+                _id: '3',
+                name: '커피하우스',
+                nickname: '[명지신도시]',
+                category: '음식/카페',
+                description: '에스프레소, 라떼, 디저트',
+                benefit: '아메리카노 1잔 50% 할인',
+                contact: '010-1234-5678',
+                address: '부산 강서구 명지오션시티 1로 123'
+            }
+        ];
+
         let currentCategory = '전체';
         
         function createStoreCard(store) {
@@ -97,22 +132,32 @@
             return categoryColors[category] || 'bg-secondary text-white';
         }
 
-        async function fetchStores(category = '전체', searchTerm = '') {
-            try {
-                const response = await fetch(`/api/stores?category=${category}&search=${searchTerm}`);
-                const stores = await response.json();
-                
-                const container = document.getElementById('storeContainer');
-                container.innerHTML = ''; // 기존 내용 초기화
-                
-                stores.forEach(store => {
-                    const storeCard = createStoreCard(store);
-                    container.appendChild(storeCard);
-                });
-            } catch (error) {
-                console.error('가게 정보를 불러오는 중 오류 발생:', error);
-                alert('가게 정보를 불러오지 못했습니다.');
+        function fetchStores(category = '전체', searchTerm = '') {
+            let filteredStores = tempStores;
+            
+            // 카테고리 필터링
+            if (category !== '전체') {
+                filteredStores = filteredStores.filter(store => store.category === category);
             }
+            
+            // 검색어 필터링
+            if (searchTerm) {
+                const searchTermLower = searchTerm.toLowerCase();
+                filteredStores = filteredStores.filter(store => 
+                    store.name.toLowerCase().includes(searchTermLower) ||
+                    store.nickname.toLowerCase().includes(searchTermLower) ||
+                    (store.description && store.description.toLowerCase().includes(searchTermLower)) ||
+                    store.address.toLowerCase().includes(searchTermLower)
+                );
+            }
+            
+            const container = document.getElementById('storeContainer');
+            container.innerHTML = ''; // 기존 내용 초기화
+            
+            filteredStores.forEach(store => {
+                const storeCard = createStoreCard(store);
+                container.appendChild(storeCard);
+            });
         }
 
         // 카테고리 버튼 이벤트
