@@ -12,16 +12,46 @@
         body {
             background-color: #f4f6f9;
         }
+        
         .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-left: 5px solid transparent;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+        
+        .card-header.category-food-cafe {
+            border-left-color: #F6A5A5; /* 부드러운 산호색 */
+        }
+        
+        .card-header.category-life-convenience {
+            border-left-color: #A5C9E6; /* 차분한 파스텔 블루 */
+        }
+        
+        .card-header.category-health-beauty {
+            border-left-color: #C5A5E6; /* 부드러운 라벤더 */
+        }
+        
+        .card-header.category-etc {
+            border-left-color: #A5E6D3; /* 차분한 민트 */
+        }
+        
+        .card-header .card-title {
+            color: #333;
+            margin-bottom: 0;
+        }
+        
+        .card-header small {
+            color: #6c757d;
+        }
+        
         .benefit {
             color: #dc3545;
         }
-        .bg-soft-coral { background-color: #F6A5A5 !important; }
-        .bg-soft-blue { background-color: #A5C9E6 !important; }
-        .bg-soft-lavender { background-color: #C5A5E6 !important; }
-        .bg-soft-mint { background-color: #A5E6D3 !important; }
         
         /* 카드 호버 효과 */
         .card:hover {
@@ -119,13 +149,41 @@
                 <div class="card h-100">
                     <div class="card-header ${getCategoryColor(store.category)}" data-bs-toggle="collapse" 
                          data-bs-target="#store-${store._id}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5 class="card-title mb-1 text-white">${store.name}</h5>
-                                <small class="text-white-50">${store.nickname}</small>
-                            </div>
-                            <i class="bi bi-chevron-down text-white"></i>
+                        <div>
+                            <h5 class="card-title">${store.name}</h5>
+                            <small>${store.nickname}</small>
                         </div>
+                        <i class="bi bi-chevron-down text-muted"></i>
+                    </div>
+                    <div id="store-${store._id}" class="collapse">
+                        <div class="card-body">
+                            ${store.description ? `<p class="card-text"><strong>설명:</strong> ${store.description}</p>` : ''}
+                            ${store.benefit ? `<p class="card-text"><strong>혜택:</strong> <span class="benefit">${store.benefit}</span></p>` : ''}
+                            ${store.code ? `<p class="card-text"><strong>암호:</strong> <span class="text-success">${store.code}</span></p>` : ''}
+                            <p class="card-text"><strong>연락처:</strong> ${store.contact}</p>
+                            <p class="card-text"><strong>주소:</strong> ${store.address}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            card.innerHTML = cardContent;
+            return card;
+        }
+
+        function createStoreCard(store) {
+            const card = document.createElement('div');
+            card.className = 'col-12 col-md-6 col-lg-4';
+            
+            const cardContent = `
+                <div class="card h-100">
+                    <div class="card-header ${getCategoryColor(store.category)}" data-bs-toggle="collapse" 
+                         data-bs-target="#store-${store._id}">
+                        <div>
+                            <h5 class="card-title">${store.name}</h5>
+                            <small>${store.nickname}</small>
+                        </div>
+                        <i class="bi bi-chevron-down text-muted"></i>
                     </div>
                     <div id="store-${store._id}" class="collapse">
                         <div class="card-body">
@@ -144,13 +202,13 @@
         }
 
         function getCategoryColor(category) {
-            const categoryColors = {
-                '음식/카페': 'bg-soft-coral text-white',     // 부드러운 산호색
-                '생활/편의': 'bg-soft-blue text-white',      // 차분한 파스텔 블루
-                '건강/뷰티': 'bg-soft-lavender text-white', // 부드러운 라벤더
-                '기타': 'bg-soft-mint text-white'           // 차분한 민트
+            const categoryClasses = {
+                '음식/카페': 'category-food-cafe',
+                '생활/편의': 'category-life-convenience', 
+                '건강/뷰티': 'category-health-beauty',
+                '기타': 'category-etc'
             };
-            return categoryColors[category] || 'bg-secondary text-white';
+            return categoryClasses[category] || '';
         }
 
         function fetchStores(category = '전체', searchTerm = '') {
