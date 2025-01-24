@@ -18,6 +18,17 @@
         .benefit {
             color: #dc3545;
         }
+        .bg-soft-coral { background-color: #F6A5A5 !important; }
+        .bg-soft-blue { background-color: #A5C9E6 !important; }
+        .bg-soft-lavender { background-color: #C5A5E6 !important; }
+        .bg-soft-mint { background-color: #A5E6D3 !important; }
+        
+        /* 카드 호버 효과 */
+        .card:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -85,6 +96,16 @@
                 benefit: '아메리카노 1잔 50% 할인',
                 contact: '010-1234-5678',
                 address: '부산 강서구 명지오션시티 1로 123'
+            },
+            {
+                _id: '4',
+                name: '세탁소',
+                nickname: '[명지국제도시]',
+                category: '생활/편의',
+                description: '일반 세탁, 특수 세탁',
+                benefit: '첫 방문 10% 할인',
+                contact: '010-9876-5432',
+                address: '부산 강서구 명지국제1로 456'
             }
         ];
 
@@ -100,10 +121,10 @@
                          data-bs-target="#store-${store._id}">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h5 class="card-title mb-1">${store.name}</h5>
-                                <small class="text-muted">${store.nickname}</small>
+                                <h5 class="card-title mb-1 text-white">${store.name}</h5>
+                                <small class="text-white-50">${store.nickname}</small>
                             </div>
-                            <i class="bi bi-chevron-down"></i>
+                            <i class="bi bi-chevron-down text-white"></i>
                         </div>
                     </div>
                     <div id="store-${store._id}" class="collapse">
@@ -124,10 +145,10 @@
 
         function getCategoryColor(category) {
             const categoryColors = {
-                '음식/카페': 'bg-danger text-white',
-                '생활/편의': 'bg-primary text-white', 
-                '건강/뷰티': 'bg-warning text-dark', 
-                '기타': 'bg-success text-white'
+                '음식/카페': 'bg-soft-coral text-white',     // 부드러운 산호색
+                '생활/편의': 'bg-soft-blue text-white',      // 차분한 파스텔 블루
+                '건강/뷰티': 'bg-soft-lavender text-white', // 부드러운 라벤더
+                '기타': 'bg-soft-mint text-white'           // 차분한 민트
             };
             return categoryColors[category] || 'bg-secondary text-white';
         }
