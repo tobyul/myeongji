@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>명지국제자유방 이웃점빵</title>
+   <style>
+        /* 이전에 제공된 CSS 스타일 그대로 유지 */
+        :root {
+            --primary-color: #4A90E2;
+            --accent-color: #FF6B6B;
+            --background-color: #F8F9FA;
+            --header-gradient: linear-gradient(135deg, #4A90E2, #357ABD);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+            background-color: var(--background-color);
+            padding-bottom: 60px;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: var(--header-gradient);
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            color: white;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .category-tabs {
+            display: flex;
+            overflow-x: hidden;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 20px;
+            margin-right: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .tab.active {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .store-list {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 15px;
+        }
+
+        .store-accordion {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .store-accordion:hover {
+            transform: translateY(-2px);
+        }
+
+        .store-header {
+            padding: 15px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            cursor: pointer;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .store-name {
+            font-size: 1.1em;
+            color: #E95E2B;
+            margin-bottom: 4px;
+        }
+
+        .nickname {
+            color: #868E96;
+            font-size: 0.9em;
+            background: #F1F3F5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .toggle-btn {
+            transition: transform 0.3s ease;
+            font-size: 1.2em;
+            padding: 0 5px;
+            color: var(--primary-color);
+        }
+
+        .toggle-btn.active {
+            transform: rotate(180deg);
+        }
+
+        .store-content {
+            display: none;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background: linear-gradient(to bottom, #fff, #f8f9fa);
+        }
+
+        .store-content.active {
+            display: block;
+        }
+
+        .info-row {
+            margin-bottom: 8px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #495057;
+            display: inline-block;
+            width: 80px;
+        }
+
+        .benefit {
+            color: var(--accent-color);
+        }
+
+        .code {
+            color: #02C39A;
+        }
+
+        [data-category="음식/카페"] .store-header {
+            border-left-color: #FF6B6B;
+        }
+
+        [data-category="생활/편의"] .store-header {
+            border-left-color: #4A90E2;
+        }
+
+        [data-category="건강/뷰티"] .store-header {
+            border-left-color: #FDA7DF;
+        }
+
+        [data-category="기타"] .store-header {
+            border-left-color: #4ECDC4;
+        }
+
+        /* PC 스타일 */
+        @media (min-width: 768px) {
+            .store-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* 모바일 스타일 */
+        @media (max-width: 767px) {
+            .store-list {
+                grid-template-columns: 1fr;
+            }
+        }
+   </style>
+</head>
+<body>
+   <div class="header">
+       <input type="text" class="search-bar" placeholder="업체명 또는 키워드로 검색...">
+       <div class="category-tabs">
+           <button class="tab active">전체</button>
+           <button class="tab">음식/카페</button>
+           <button class="tab">생활/편의</button>
+           <button class="tab">건강/뷰티</button>
+           <button class="tab">기타</button>
+       </div>
+   </div>
+
+   <div class="store-list">
+       <!-- 이 부분은 JavaScript로 동적 로드 -->
+   </div>
+
+   <script>
+       async function loadStores() {
+           try {
+               const response = await fetch('/api/stores');
+               const stores = await response.json();
+               
+               const storeList = document.querySelector('.store-list');
+               storeList.innerHTML = ''; // 기존 내용 초기화
+
+               stores.forEach(store => {
+                   const storeElement = document.createElement('div');
+                   storeElement.className = 'store-accordion';
+                   storeElement.dataset.category = store.category;
+                   
+                   storeElement.innerHTML = `
+                       <div class="store-header">
+                           <div>
+                               <div class="store-name">${store.name}</div>
+                               <div class="nickname">${store.nickname}</div>
+                           </div>
+                           <div class="toggle-btn">▾</div>
+                       </div>
+                       <div class="store-content">
+                           <div class="info-row">
+                               <span class="label">설명</span>
+                               <span>${store.description}</span>
+                           </div>
+                           ${store.benefit ? `
+                            <div class="info-row">
+                                <span class="label">혜택</span>
+                                <span class="benefit">${store.benefit}</span>
+                            </div>
+                            ` : ''}
+                           ${store.code ? `
+                           <div class="info-row">
+                               <span class="label">암호</span>
+                               <span class="code">${store.code}</span>
+                           </div>
+                           ` : ''}
+                           <div class="info-row">
+                               <span class="label">연락처</span>
+                               <span>${store.contact}</span>
+                           </div>
+                           <div class="info-row">
+                               <span class="label">주소</span>
+                               <span>${store.address}</span>
+                           </div>
+                       </div>
+                   `;
+
+                   storeList.appendChild(storeElement);
+               });
+
+               // 이벤트 리스너 재적용
+               attachEventListeners();
+           } catch (error) {
+               console.error('Failed to load stores:', error);
+           }
+       }
+
+       function attachEventListeners() {
+           // 아코디언 기능
+           document.querySelectorAll('.store-header').forEach(header => {
+               header.addEventListener('click', () => {
+                   const storeAccordion = header.closest('.store-accordion');
+                   const content = header.nextElementSibling;
+                   const toggleBtn = header.querySelector('.toggle-btn');
+
+                   // 화면 크기에 따라 아코디언 동작 조정
+                   const isMobile = window.innerWidth <= 767;
+                   if (isMobile) {
+                       // 모바일에서는 개별 아코디언만 열 수 있도록
+                       const isOpening = !content.classList.contains('active');
+                       document.querySelectorAll('.store-content').forEach(itemContent => {
+                           itemContent.classList.remove('active');
+                       });
+                       document.querySelectorAll('.toggle-btn').forEach(itemToggleBtn => {
+                           itemToggleBtn.classList.remove('active');
+                       });
+                       if (isOpening) {
+                           content.classList.add('active');
+                           toggleBtn.classList.add('active');
+                       }
+                   } else {
+                       // PC에서는 같은 행의 아코디언을 함께 열 수 있도록
+                       const rowIndex = Math.floor([...storeAccordion.parentElement.children].indexOf(storeAccordion) / 2);
+                       const items = document.querySelectorAll('.store-accordion');
+                       const rowItems = Array.from(items).filter((item, index) => Math.floor(index / 2) === rowIndex);
+                       
+                       const isOpening = !content.classList.contains('active');
+                       rowItems.forEach(item => {
+                           const itemContent = item.querySelector('.store-content');
+                           const itemToggleBtn = item.querySelector('.toggle-btn');
+                           
+                           if (isOpening) {
+                               itemContent.classList.add('active');
+                               itemToggleBtn.classList.add('active');
+                           } else {
+                               itemContent.classList.remove('active');
+                               itemToggleBtn.classList.remove('active');
+                           }
+                       });
+                       
+                       // 다른 행의 열린 아이템들 닫기
+                       items.forEach((item, index) => {
+                           if (Math.floor(index / 2) !== rowIndex) {
+                               item.querySelector('.store-content').classList.remove('active');
+                               item.querySelector('.toggle-btn').classList.remove('active');
+                           }
+                       });
+                   }
+               });
+           });
+
+           // 검색 기능
+           const searchBar = document.querySelector('.search-bar');
+           searchBar.addEventListener('input', (e) => {
+               const searchTerm = e.target.value.toLowerCase();
+               document.querySelectorAll('.store-accordion').forEach(store => {
+                   const text = store.textContent.toLowerCase();
+                   store.style.display = text.includes(searchTerm) ? 'block' : 'none';
+               });
+           });
+
+           // 카테고리 탭 기능
+           document.querySelectorAll('.tab').forEach(tab => {
+               tab.addEventListener('click', () => {
+                   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                   tab.classList.add('active');
+                   
+                   const category = tab.textContent;
+                   document.querySelectorAll('.store-accordion').forEach(store => {
+                       if (category === '전체' || store.dataset.category === category) {
+                           store.style.display = 'block';
+                       } else {
+                           store.style.display = 'none';
+                       }
+                   });
+               });
+           });
+       }
+
+       // 페이지 로드 시 스토어 로드
+       document.addEventListener('DOMContentLoaded', loadStores);
+   </script>
+</body>
+</html>
