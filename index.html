@@ -66,7 +66,7 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="input-group">
-                    <input type="text" id="searchInput" class="form-control" placeholder="업체명 또는 키워드로 검색...">
+                    <input type="text" id="searchInput" class="form-control" placeholder="점빵명 또는 키워드로 검색...">
                     <button id="searchButton" class="btn btn-primary">검색</button>
                 </div>
             </div>
@@ -115,8 +115,8 @@
                             ${store.description ? `<p class="card-text"><strong>설명:</strong> ${store.description}</p>` : ''}
                             ${store.benefit ? `<p class="card-text"><strong>혜택:</strong> <span class="benefit">${store.benefit}</span></p>` : ''}
                             ${store.code ? `<p class="card-text"><strong>암호:</strong> <span class="text-success">${store.code}</span></p>` : ''}
-                            <p class="card-text"><strong>연락처:</strong> ${store.contact}</p>
-                            <p class="card-text"><strong>주소:</strong> ${store.address}</p>
+                            ${store.contact ? `<p class="card-text"><strong>연락처:</strong> ${store.contact}</p>` : ''}
+                            ${store.address ? `<p class="card-text"><strong>주소:</strong> ${store.address}</p>` : ''}
                         </div>
                     </div>
                 </div>
