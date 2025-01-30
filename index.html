@@ -59,15 +59,30 @@
             transition: transform 0.3s ease;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        .logo-container {
+            text-align: center;
+            padding: 20px 0;
+            background-color: white;
+            margin-bottom: 1px;
+        }
+
+        .logo-container img {
+            max-width: 200px;
+            max-height: 180px;
+        }
     </style>
 </head>
 <body>
+    <div class="logo-container">
+        <img src="images/logo.png" alt="명지국제자유방 이웃점빵 로고">
+    </div>
     <div class="container-fluid py-4">
         <div class="row mb-3">
             <div class="col-12">
                 <div class="input-group">
                     <input type="text" id="searchInput" class="form-control" placeholder="점빵명 또는 키워드로 검색...">
-                    <button id="searchButton" class="btn btn-primary">검색</button>
+                    <button id="searchButton" class="btn btn-secondary">검색</button>
                 </div>
             </div>
         </div>
@@ -75,11 +90,11 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="btn-group w-100" role="group">
-                    <button type="button" class="btn btn-outline-primary category-btn active" data-category="전체">전체</button>
-                    <button type="button" class="btn btn-outline-primary category-btn" data-category="음식/카페">음식/카페</button>
-                    <button type="button" class="btn btn-outline-primary category-btn" data-category="생활/편의">생활/편의</button>
-                    <button type="button" class="btn btn-outline-primary category-btn" data-category="건강/뷰티">건강/뷰티</button>
-                    <button type="button" class="btn btn-outline-primary category-btn" data-category="기타">기타</button>
+                    <button type="button" class="btn btn-outline-secondary category-btn active" data-category="전체">전체</button>
+                    <button type="button" class="btn btn-outline-secondary category-btn" data-category="음식/카페">음식/카페</button>
+                    <button type="button" class="btn btn-outline-secondary category-btn" data-category="생활/편의">생활/편의</button>
+                    <button type="button" class="btn btn-outline-secondary category-btn" data-category="건강/뷰티">건강/뷰티</button>
+                    <button type="button" class="btn btn-outline-secondary category-btn" data-category="기타">기타</button>
                 </div>
             </div>
         </div>
