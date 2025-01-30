@@ -60,6 +60,30 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
+        .btn-outline-primary {
+            color: #666;
+            border-color: #666;
+        }
+
+        .btn-outline-primary:hover {
+            color: white;
+            background-color: #666;
+            border-color: #666;
+        }
+
+        .btn-outline-primary:active,
+        .btn-outline-primary.active {
+            color: white !important;
+            background-color: #666 !important;
+            border-color: #666 !important;
+        }
+
+        .btn-check:checked + .btn-outline-primary {
+            color: white;
+            background-color: #666;
+            border-color: #666;
+        }
+
         .logo-container {
             text-align: center;
             padding: 20px 0;
@@ -68,7 +92,7 @@
         }
 
         .logo-container img {
-            max-width: 200px;  /* 로고 크기 조절 */
+            max-width: 200px;
             max-height: 180px;
         }
     </style>
