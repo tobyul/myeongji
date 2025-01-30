@@ -102,6 +102,14 @@
         <div id="storeContainer" class="row g-3">
             <!-- 동적으로 카드 추가될 영역 -->
         </div>
+
+        <!-- 페이지네이션 추가 -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination">
+                </ul>
+            </nav>
+        </div>
     </div>
 
     <!-- Bootstrap & Popper.js -->
@@ -111,36 +119,6 @@
     <script>
         let currentCategory = '전체';
         
-        function createStoreCard(store) {
-            const card = document.createElement('div');
-            card.className = 'col-12 col-md-6 col-lg-4';
-            
-            const cardContent = `
-                <div class="card h-100">
-                    <div class="card-header ${getCategoryColor(store.category)}" data-bs-toggle="collapse" 
-                         data-bs-target="#store-${store._id}">
-                        <div>
-                            <h5 class="card-title">${store.name}</h5>
-                            <small>${store.nickname}</small>
-                        </div>
-                        <i class="bi bi-chevron-down text-muted"></i>
-                    </div>
-                    <div id="store-${store._id}" class="collapse">
-                        <div class="card-body">
-                            ${store.description ? `<p class="card-text"><strong>설명:</strong> ${store.description}</p>` : ''}
-                            ${store.benefit ? `<p class="card-text"><strong>혜택:</strong> <span class="benefit">${store.benefit}</span></p>` : ''}
-                            ${store.code ? `<p class="card-text"><strong>암호:</strong> <span class="text-success">${store.code}</span></p>` : ''}
-                            ${store.contact ? `<p class="card-text"><strong>연락처:</strong> ${store.contact}</p>` : ''}
-                            ${store.address ? `<p class="card-text"><strong>주소:</strong> ${store.address}</p>` : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            card.innerHTML = cardContent;
-            return card;
-        }
-
         function createStoreCard(store) {
             const card = document.createElement('div');
             card.className = 'col-12 col-md-6 col-lg-4';
@@ -181,12 +159,16 @@
             return categoryClasses[category] || '';
         }
 
-        // 프론트엔드 JavaScript 수정
+        // 페이징 관련 변수 추가
+        const itemsPerPage = 12;
+        let currentPage = 1;
+        let totalStores = [];
+
+        // fetchStores 함수 수정
         function fetchStores(category = '전체', searchTerm = '') {
             let url = 'https://gw.ecron.co.kr:81/api/stores';
             
             if (category !== '전체' && !searchTerm) {
-                // 쿼리 파라미터로 변경
                 url = `https://gw.ecron.co.kr:81/api/stores/category?name=${encodeURIComponent(category)}`;
             } else if (searchTerm) {
                 url = `https://gw.ecron.co.kr:81/api/stores/search?term=${encodeURIComponent(searchTerm)}`;
@@ -195,18 +177,85 @@
             fetch(url)
                 .then(response => response.json())
                 .then(stores => {
-                    const container = document.getElementById('storeContainer');
-                    container.innerHTML = ''; // 기존 내용 초기화
-                    
-                    stores.forEach(store => {
-                        const storeCard = createStoreCard(store);
-                        container.appendChild(storeCard);
-                    });
+                    totalStores = stores; // 전체 데이터 저장
+                    renderPage(1); // 첫 페이지 렌더링
+                    renderPagination(); // 페이지네이션 렌더링
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('데이터를 불러오는 중 오류가 발생했습니다.');
                 });
+        }
+
+        // 페이지 렌더링 함수
+        function renderPage(pageNumber) {
+            currentPage = pageNumber;
+            const startIndex = (pageNumber - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageStores = totalStores.slice(startIndex, endIndex);
+            
+            const container = document.getElementById('storeContainer');
+            container.innerHTML = '';
+            
+            pageStores.forEach(store => {
+                const storeCard = createStoreCard(store);
+                container.appendChild(storeCard);
+            });
+        }
+
+        // 페이지네이션 렌더링 함수
+        function renderPagination() {
+            const totalPages = Math.ceil(totalStores.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            if (totalPages > 1) {
+                const prevLi = document.createElement('li');
+                prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+                prevLi.innerHTML = `
+                    <a class="page-link text-secondary" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                `;
+                prevLi.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (currentPage > 1) {
+                        renderPage(currentPage - 1);
+                        renderPagination();
+                    }
+                });
+                pagination.appendChild(prevLi);
+            }
+            
+            for (let i = 1; i <= totalPages; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${currentPage === i ? 'active bg-secondary' : ''}`;
+                li.innerHTML = `<a class="page-link ${currentPage === i ? 'bg-secondary border-secondary' : 'text-secondary'}" href="#">${i}</a>`;
+                li.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    renderPage(i);
+                    renderPagination();
+                });
+                pagination.appendChild(li);
+            }
+            
+            if (totalPages > 1) {
+                const nextLi = document.createElement('li');
+                nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+                nextLi.innerHTML = `
+                    <a class="page-link text-secondary" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                `;
+                nextLi.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (currentPage < totalPages) {
+                        renderPage(currentPage + 1);
+                        renderPagination();
+                    }
+                });
+                pagination.appendChild(nextLi);
+            }
         }
 
         // 카테고리 버튼 이벤트
