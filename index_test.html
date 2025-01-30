@@ -102,6 +102,14 @@
         <div id="storeContainer" class="row g-3">
             <!-- 동적으로 카드 추가될 영역 -->
         </div>
+
+        <!-- 페이지네이션 추가 -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination">
+                </ul>
+            </nav>
+        </div>
     </div>
 
     <!-- Bootstrap & Popper.js -->
@@ -111,36 +119,6 @@
     <script>
         let currentCategory = '전체';
         
-        function createStoreCard(store) {
-            const card = document.createElement('div');
-            card.className = 'col-12 col-md-6 col-lg-4';
-            
-            const cardContent = `
-                <div class="card h-100">
-                    <div class="card-header ${getCategoryColor(store.category)}" data-bs-toggle="collapse" 
-                         data-bs-target="#store-${store._id}">
-                        <div>
-                            <h5 class="card-title">${store.name}</h5>
-                            <small>${store.nickname}</small>
-                        </div>
-                        <i class="bi bi-chevron-down text-muted"></i>
-                    </div>
-                    <div id="store-${store._id}" class="collapse">
-                        <div class="card-body">
-                            ${store.description ? `<p class="card-text"><strong>설명:</strong> ${store.description}</p>` : ''}
-                            ${store.benefit ? `<p class="card-text"><strong>혜택:</strong> <span class="benefit">${store.benefit}</span></p>` : ''}
-                            ${store.code ? `<p class="card-text"><strong>암호:</strong> <span class="text-success">${store.code}</span></p>` : ''}
-                            ${store.contact ? `<p class="card-text"><strong>연락처:</strong> ${store.contact}</p>` : ''}
-                            ${store.address ? `<p class="card-text"><strong>주소:</strong> ${store.address}</p>` : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            card.innerHTML = cardContent;
-            return card;
-        }
-
         function createStoreCard(store) {
             const card = document.createElement('div');
             card.className = 'col-12 col-md-6 col-lg-4';
