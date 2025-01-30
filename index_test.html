@@ -209,12 +209,11 @@
             const pagination = document.getElementById('pagination');
             pagination.innerHTML = '';
             
-            // 이전 페이지 버튼
             if (totalPages > 1) {
                 const prevLi = document.createElement('li');
                 prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
                 prevLi.innerHTML = `
-                    <a class="page-link" href="#" aria-label="Previous">
+                    <a class="page-link text-secondary" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 `;
@@ -228,11 +227,10 @@
                 pagination.appendChild(prevLi);
             }
             
-            // 페이지 번호 버튼
             for (let i = 1; i <= totalPages; i++) {
                 const li = document.createElement('li');
-                li.className = `page-item ${currentPage === i ? 'active' : ''}`;
-                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.className = `page-item ${currentPage === i ? 'active bg-secondary' : ''}`;
+                li.innerHTML = `<a class="page-link ${currentPage === i ? 'bg-secondary border-secondary' : 'text-secondary'}" href="#">${i}</a>`;
                 li.addEventListener('click', (e) => {
                     e.preventDefault();
                     renderPage(i);
@@ -241,12 +239,11 @@
                 pagination.appendChild(li);
             }
             
-            // 다음 페이지 버튼
             if (totalPages > 1) {
                 const nextLi = document.createElement('li');
                 nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
                 nextLi.innerHTML = `
-                    <a class="page-link" href="#" aria-label="Next">
+                    <a class="page-link text-secondary" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 `;
