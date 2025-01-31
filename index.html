@@ -71,6 +71,21 @@
             max-width: 200px;
             max-height: 180px;
         }
+
+        .visitor-stats .card {
+            background-color: white;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .visitor-stats .card-body {
+            padding: 1.25rem;
+        }
+
+        .visitor-stats h5 {
+            color: #333;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -111,6 +126,25 @@
                 <ul class="pagination" id="pagination">
                 </ul>
             </nav>
+        </div>
+
+        <!-- 방문자 수 통계 섹션 추가 -->
+        <div class="visitor-stats text-center mt-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-muted mb-3">고마우신 분들</h6>
+                    <div class="d-flex justify-content-center gap-4">
+                        <div>
+                            <span class="text-secondary">오늘 방문</span>
+                            <h5 class="mb-0" id="uniqueVisits">0</h5>
+                        </div>
+                        <div>
+                            <span class="text-secondary">총 방문</span>
+                            <h5 class="mb-0" id="totalVisits">0</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -260,6 +294,56 @@
             }
         }
 
+        // 세션 ID 생성 함수
+        function generateSessionId() {
+            return 'sess_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // 방문 기록 함수만 수정
+        async function logVisit() {
+            let sessionId = sessionStorage.getItem('visitorSessionId');
+            if (!sessionId) {
+                sessionId = generateSessionId();
+                sessionStorage.setItem('visitorSessionId', sessionId);
+            }
+
+            try {
+                const response = await fetch('https://gw.ecron.co.kr:81/api/visitor/log', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sessionId: sessionId,
+                        pageUrl: window.location.href,
+                        userAgent: navigator.userAgent
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('방문 기록 실패');
+                }
+
+                // 방문자 수 즉시 갱신
+                await displayVisitorCount();
+            } catch (error) {
+                console.error('방문 기록 실패:', error);
+            }
+        }
+
+        // 방문자 수 표시 함수
+        async function displayVisitorCount() {
+            try {
+                const response = await fetch('https://gw.ecron.co.kr:81/api/visitor/stats');
+                const stats = await response.json();
+                
+                document.getElementById('totalVisits').textContent = stats.total_visits;
+                document.getElementById('uniqueVisits').textContent = stats.unique_visits;
+            } catch (error) {
+                console.error('통계 조회 실패:', error);
+            }
+        }
+
         // 카테고리 버튼 이벤트
         document.querySelectorAll('.category-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -286,7 +370,11 @@
         });
 
         // 페이지 로드 시 초기 데이터 로드
-        document.addEventListener('DOMContentLoaded', () => fetchStores());
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchStores();
+            logVisit();
+            displayVisitorCount();
+        });
     </script>
 </body>
 </html>
