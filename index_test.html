@@ -299,9 +299,8 @@
             return 'sess_' + Math.random().toString(36).substr(2, 9);
         }
 
-        // 방문 기록 함수
+        // 방문 기록 함수만 수정
         async function logVisit() {
-            // sessionStorage에서 세션 ID 확인
             let sessionId = sessionStorage.getItem('visitorSessionId');
             if (!sessionId) {
                 sessionId = generateSessionId();
@@ -309,7 +308,7 @@
             }
 
             try {
-                await fetch('https://gw.ecron.co.kr:81/api/visitor/log', {
+                const response = await fetch('https://gw.ecron.co.kr:81/api/visitor/log', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -320,6 +319,13 @@
                         userAgent: navigator.userAgent
                     })
                 });
+
+                if (!response.ok) {
+                    throw new Error('방문 기록 실패');
+                }
+
+                // 방문자 수 즉시 갱신
+                await displayVisitorCount();
             } catch (error) {
                 console.error('방문 기록 실패:', error);
             }
