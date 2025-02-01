@@ -7,7 +7,9 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
+    <!-- 카카오맵 API -->
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=67015c72ec5b9ba4909f201cc8aa8601&libraries=services"></script>
     <style>
         body {
             background-color: #f4f6f9;
@@ -159,6 +161,8 @@
             const card = document.createElement('div');
             card.className = 'col-12 col-md-6 col-lg-4';
             
+            const mapId = `map-${store._id}`;
+            
             const cardContent = `
                 <div class="card h-100">
                     <div class="card-header ${getCategoryColor(store.category)}" data-bs-toggle="collapse" 
@@ -175,13 +179,55 @@
                             ${store.benefit ? `<p class="card-text"><strong>혜택:</strong> <span class="benefit">${store.benefit}</span></p>` : ''}
                             ${store.code ? `<p class="card-text"><strong>암호:</strong> <span class="text-success">${store.code}</span></p>` : ''}
                             ${store.contact ? `<p class="card-text"><strong>연락처:</strong> ${store.contact}</p>` : ''}
-                            ${store.address ? `<p class="card-text"><strong>주소:</strong> ${store.address}</p>` : ''}
+                            ${store.address ? `
+                                <p class="card-text"><strong>주소:</strong> ${store.address}</p>
+                                <div id="${mapId}" style="width:100%;height:200px;margin-top:10px;"></div>
+                            ` : ''}
                         </div>
                     </div>
                 </div>
             `;
             
             card.innerHTML = cardContent;
+
+            // 주소가 있는 경우 지도 초기화
+            if (store.address) {
+                // collapse 이벤트 발생 시 지도 초기화
+                card.querySelector(`[data-bs-target="#store-${store._id}"]`).addEventListener('click', function() {
+                    setTimeout(() => {
+                        // 지도 컨테이너가 보이는 상태일 때만 초기화
+                        const mapContainer = document.getElementById(mapId);
+                        if (!mapContainer.querySelector('.map_canvas')) {
+                            const options = {
+                                center: new kakao.maps.LatLng(33.450701, 126.570667),
+                                level: 3
+                            };
+                            
+                            const map = new kakao.maps.Map(mapContainer, options);
+                            
+                            // 주소-좌표 변환 객체 생성
+                            const geocoder = new kakao.maps.services.Geocoder();
+
+                            // 주소로 좌표 검색
+                            geocoder.addressSearch(store.address, function(result, status) {
+                                if (status === kakao.maps.services.Status.OK) {
+                                    const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                                    // 마커 생성
+                                    const marker = new kakao.maps.Marker({
+                                        map: map,
+                                        position: coords
+                                    });
+
+                                    // 지도 중심을 해당 위치로 이동
+                                    map.setCenter(coords);
+                                }
+                            });
+                        }
+                    }, 100);
+                });
+            }
+            
             return card;
         }
 
