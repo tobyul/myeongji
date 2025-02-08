@@ -362,32 +362,39 @@
         // 방문 기록 함수만 수정
         async function logVisit() {
             let sessionId = sessionStorage.getItem('visitorSessionId');
+            let isNewSession = false;  // 새 세션 여부를 추적
+
             if (!sessionId) {
                 sessionId = generateSessionId();
                 sessionStorage.setItem('visitorSessionId', sessionId);
+
+                isNewSession = true;  // 새 세션 생성됨
             }
 
-            try {
-                const response = await fetch('https://gw.ecron.co.kr:81/api/visitor/log', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        sessionId: sessionId,
-                        pageUrl: window.location.href,
-                        userAgent: navigator.userAgent
-                    })
-                });
+            // 새 세션일 때만 로그 기록
+            if (isNewSession) {
+                try {
+                    const response = await fetch('https://gw.ecron.co.kr:81/api/visitor/log', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            sessionId: sessionId,
+                            pageUrl: window.location.href,
+                            userAgent: navigator.userAgent
+                        })
+                    });
 
-                if (!response.ok) {
-                    throw new Error('방문 기록 실패');
+                    if (!response.ok) {
+                        throw new Error('방문 기록 실패');
+                    }
+
+                    // 방문자 수 즉시 갱신
+                    await displayVisitorCount();
+                } catch (error) {
+                    console.error('방문 기록 실패:', error);
                 }
-
-                // 방문자 수 즉시 갱신
-                await displayVisitorCount();
-            } catch (error) {
-                console.error('방문 기록 실패:', error);
             }
         }
 
