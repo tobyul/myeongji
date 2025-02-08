@@ -362,19 +362,25 @@
         // 방문 기록 함수만 수정
         async function logVisit() {
             let sessionId = sessionStorage.getItem('visitorSessionId');
-            let lastVisitDate = sessionStorage.getItem('lastVisitDate');
+            let lastActivityTime = sessionStorage.getItem('lastActivityTime');
             let isNewSession = false;  // 새 세션 여부를 추적
 
-            const today = new Date().toDateString();  // 현재 날짜
+            const currentTime = Date.now();
+            const TIMEOUT = 30 * 60 * 1000; // 30분을 밀리초로 표현
 
-            // 세션이 없거나 날짜가 변경된 경우
-            if (!sessionId  || !lastVisitDate || lastVisitDate !== today) {
+            // 새 세션이 필요한 경우:
+            // 1. 세션 ID가 없거나
+            // 2. 마지막 활동 시간이 없거나
+            // 3. 마지막 활동으로부터 30분이 지났을 때
+            if (!sessionId || !lastActivityTime || (currentTime - parseInt(lastActivityTime)) > TIMEOUT) {
                 sessionId = generateSessionId();
-                sessionStorage.setItem('lastVisitDate', today);
                 sessionStorage.setItem('visitorSessionId', sessionId);
 
                 isNewSession = true;  // 새 세션 생성됨
             }
+
+            // 현재 시간을 마지막 활동 시간으로 업데이트
+            sessionStorage.setItem('lastActivityTime', currentTime.toString());
 
             // 새 세션일 때만 로그 기록
             if (isNewSession) {
