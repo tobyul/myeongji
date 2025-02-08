@@ -362,10 +362,15 @@
         // 방문 기록 함수만 수정
         async function logVisit() {
             let sessionId = sessionStorage.getItem('visitorSessionId');
+            let lastVisitDate = sessionStorage.getItem('lastVisitDate');
             let isNewSession = false;  // 새 세션 여부를 추적
 
-            if (!sessionId) {
+            const today = new Date().toDateString();  // 현재 날짜
+
+            // 세션이 없거나 날짜가 변경된 경우
+            if (!sessionId  || !lastVisitDate || lastVisitDate !== today) {
                 sessionId = generateSessionId();
+                sessionStorage.setItem('lastVisitDate', today);
                 sessionStorage.setItem('visitorSessionId', sessionId);
 
                 isNewSession = true;  // 새 세션 생성됨
