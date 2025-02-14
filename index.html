@@ -373,7 +373,7 @@
             // 1. 세션 ID가 없거나
             // 2. 마지막 활동 시간이 없거나
             // 3. 마지막 활동으로부터 30분이 지났을 때
-            if (!sessionId || !lastActivityTime || (currentTime - parseInt(lastActivityTime)) > TIMEOUT) {
+            if (!sessionId || !lastActivityTime || (currentTime - Number(lastActivityTime)) > TIMEOUT) {
                 sessionId = generateSessionId();
                 sessionStorage.setItem('visitorSessionId', sessionId);
 
