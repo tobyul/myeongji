@@ -74,82 +74,41 @@
             max-height: 180px;
         }
 
-        .emergency-info .card {
-            border-left: 5px solid #dc3545;
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .emergency-info .accordion-button:not(.collapsed) {
-            background-color: #f8f9fa;
-            color: #dc3545;
-        }
-
-        .emergency-info .accordion-button:focus {
-            box-shadow: none;
-            border-color: rgba(0,0,0,.125);
-        }
-
         .emergency-item {
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f8f9fa;
-        }
-
-        .emergency-item h6 {
-            color: #dc3545;
-            margin-bottom: 10px;
-        }
-
-        .emergency-item p {
-            margin-bottom: 5px;
-        }
-
-        .emergency-info .alert-info {
-            background-color: #f8f9fa;
-            border-color: #badbcc;
-        }
-
-        .operation-hours {
+            padding: 15px;
+            border-radius: 8px;
             background-color: #fff;
-            border-radius: 4px;
-            padding: 8px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 12px;
+        }
+
+        .hospital-name {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .info-container {
+            color: #4a5568;
+        }
+
+        .hours-info {
+            background-color: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
             margin: 8px 0;
         }
 
-        .operation-hours p {
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .hours-info .weekday,
+        .hours-info .weekend {
+            padding: 3px 0;
         }
 
-        .operation-hours .day-label {
-            background-color: #f0f0f0;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 0.9em;
-            min-width: 60px;
-            text-align: center;
-            color: #555;
-        }
-
-        .operation-hours .weekday {
-            margin-bottom: 5px;
-        }
-
-        .operation-hours .weekday .day-label {
-            background-color: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .operation-hours .weekend .day-label {
-            background-color: #fbe9e7;
-            color: #d84315;
-        }
-
-        .operation-hours .hours {
+        .hours-info span {
+            color: #2c3e50;
             font-weight: 500;
+            margin-left: 8px;
         }
 
         .visitor-stats .card {
@@ -220,173 +179,52 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title text-danger mb-3">
-                        <i class="fas fa-first-aid"></i> 긴급 의료 정보
+                        🏥 주말/야간 운영 의료기관
                     </h5>
-                    
-                    <div class="accordion" id="emergencyAccordion">
-                        <!-- 응급실 섹션 -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="hospitalHeader">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#hospitalCollapse">
-                                    🏥 야간 주말 운영 병원
-                                </button>
-                            </h2>
-                            <div id="hospitalCollapse" class="accordion-collapse collapse" data-bs-parent="#emergencyAccordion">
-                                <div class="accordion-body">
-                                    <div class="emergency-list">
-                                        <div class="emergency-item">
-                                            <h6>365텐텐이비인후과의원</h6>
-                                            <p>📞 051-292-0365</p>
-                                            <div class="operation-hours">
-                                                <p class="weekday">
-                                                    <span class="day-label">평일</span>
-                                                    <span class="hours">10:00 - 22:00</span>
-                                                </p>
-                                                <p class="weekend">
-                                                    <span class="day-label">토,일</span>
-                                                    <span class="hours">10:00 - 22:00</span>
-                                                </p>
-                                            </div>
-                                            <p>🚗 부산 강서구 명지국제8로 233 더스퀘어 3층 301호</p>
-                                        </div>
-                                        <div class="emergency-item">
-                                            <h6>명지아동병원</h6>
-                                            <p>📞 051-717-0230</p>
-                                            <div class="operation-hours">
-                                                <p class="weekday">
-                                                    <span class="day-label">평일</span>
-                                                    <span class="hours">09:00 - 18:00</span>
-                                                </p>
-                                                <p class="weekend">
-                                                    <span class="day-label">토,일</span>
-                                                    <span class="hours">09:00 - 18:00</span>
-                                                </p>
-                                            </div>
-                                            <p>🚗 부산 강서구 명지국제8로 240</p>
-                                        </div>
-                                        <div class="emergency-item">
-                                            <h6>푸르미소아청소년과의원</h6>
-                                            <p>📞 051-204-0012</p>
-                                            <div class="operation-hours">
-                                                <p class="weekday">
-                                                    <span class="day-label">평일</span>
-                                                    <span class="hours">08:30 - 18:00</span>
-                                                </p>
-                                                <p class="weekend">
-                                                    <span class="day-label">토</span>
-                                                    <span class="hours">08:30 - 14:00</span>
-                                                </p>
-                                            </div>
-                                            <p>🚗 부산 강서구 명지국제8로 257 티에스스퀘어 502호</p>
-                                        </div>
-                                        <div class="emergency-item">
-                                            <h6>개나리소아청소년과병원</h6>
-                                            <p>📞 051-202-1113</p>
-                                            <div class="operation-hours">
-                                                <p class="weekday">
-                                                    <span class="day-label">평일</span>
-                                                    <span class="hours">09:00 - 18:00</span>
-                                                </p>
-                                                <p class="weekend">
-                                                    <span class="day-label">토, 일</span>
-                                                    <span class="hours">09:00 - 12:30</span>
-                                                </p>
-                                            </div>
-                                            <p>🚗 부산 강서구 명지국제8로 269 유당빌딩 4,5층</p>
-                                        </div>
-                                        <div class="emergency-item">
-                                            <h6>행복한어린이병원</h6>
-                                            <p>📞 051-264-9500</p>
-                                            <div class="operation-hours">
-                                                <p class="weekday">
-                                                    <span class="day-label">평일</span>
-                                                    <span class="hours">09:00 - 19:00</span>
-                                                </p>
-                                                <p class="weekend">
-                                                    <span class="day-label">토</span>
-                                                    <span class="hours">09:00 - 16:00</span>
-                                                    <span class="day-label">일</span>
-                                                    <span class="hours">09:00 - 13:00</span>
-                                                </p>
-                                            </div>
-                                            <p>🚗 부산 강서구 명지국제8로 269 유당빌딩 4,5층</p>
-                                        </div>
-                                        <div class="emergency-item">
-                                            <h6>웰키즈소아청소년과의원</h6>
-                                            <p>📞 051-293-8001</p>
-                                            <div class="operation-hours">
-                                                <p class="weekday">
-                                                    <span class="day-label">평일</span>
-                                                    <span class="hours">09:00 - 18:30</span>
-                                                </p>
-                                                <p class="weekend">
-                                                    <span class="day-label">토, 일(2, 4번째 일요일 휴무)</span>
-                                                    <span class="hours">09:00 - 14:00</span>
-                                                </p>
-                                            </div>
-                                            <p>🚗 부산 강서구 명지국제8로 269 유당빌딩 4,5층</p>
-                                        </div>
-                                        <div class="emergency-item">
-                                            <h6>365하하병원</h6>
-                                            <p>📞 051-710-8899</p>
-                                            <div class="operation-hours">
-                                                <p class="weekday">
-                                                    <span class="day-label">평일</span>
-                                                    <span class="hours">09:00 - 19:00</span>
-                                                </p>
-                                                <p class="weekend">
-                                                    <span class="day-label">토, 일</span>
-                                                    <span class="hours">09:00 - 15:00</span>
-                                                </p>
-                                            </div>
-                                            <p>🚗 부산 강서구 명지오션시티4로 88 성원메디칼 365하하병원</p>
-                                        </div>
-                                    </div>
+                    <div class="emergency-list">
+                        <div class="emergency-item">
+                            <h6 class="hospital-name">365텐텐이비인후과의원</h6>
+                            <div class="info-container">
+                                <p>📞 051-292-0365</p>
+                                <div class="hours-info">
+                                    <div class="weekday">평일 <span>10:00 - 22:00</span></div>
+                                    <div class="weekend">토,일 <span>10:00 - 22:00</span></div>
                                 </div>
+                                <p>🚗 부산 강서구 명지국제8로 233 더스퀘어 3층 301호</p>
                             </div>
                         </div>
 
-                        <!-- 약국 섹션 -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="pharmacyHeader">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pharmacyCollapse">
-                                    💊 심야 운영 약국
-                                </button>
-                            </h2>
-                            <div id="pharmacyCollapse" class="accordion-collapse collapse" data-bs-parent="#emergencyAccordion">
-                                <div class="accordion-body">
-                                    <div class="emergency-list">
-                                        <div class="emergency-item">
-                                            <h6>명지굿모닝약국</h6>
-                                            <p>📞 031-000-0000</p>
-                                            <p>🕐 09:00 - 01:00</p>
-                                            <p>🚗 위치정보</p>
-                                        </div>
-                                        <div class="emergency-item mt-3">
-                                            <h6>로즈마리약국</h6>
-                                            <p>📞 031-000-0000</p>
-                                            <p>🕐 09:00 - 24:00</p>
-                                            <p>🚗 위치정보</p>
-                                        </div>
-                                        <div class="emergency-item mt-3">
-                                            <h6>햇살약국</h6>
-                                            <p>📞 031-000-0000</p>
-                                            <p>🕐 09:00 - 23:00</p>
-                                            <p>🚗 위치정보</p>
-                                        </div>
-                                    </div>
+                        <div class="emergency-item">
+                            <h6 class="hospital-name">명지아동병원</h6>
+                            <div class="info-container">
+                                <p>📞 051-717-0230</p>
+                                <div class="hours-info">
+                                    <div class="weekday">평일 <span>09:00 - 18:00</span></div>
+                                    <div class="weekend">토,일 <span>09:00 - 18:00</span></div>
                                 </div>
+                                <p>🚗 부산 강서구 명지국제8로 240</p>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="alert alert-info mt-3 mb-0">
-                        <small>
-                            ⚠️ 응급상황 시 연락처<br>
-                            • 119 (응급구조)<br>
-                            • 129 (보건복지상담)<br>
-                            • 031-810-5114 (명지병원 응급실 직통)
-                        </small>
+                        <div class="emergency-item">
+                            <h6 class="hospital-name">365하하병원</h6>
+                            <div class="info-container">
+                                <p>📞 051-710-8899</p>
+                                <div class="hours-info">
+                                    <div class="weekday">평일 <span>09:00 - 19:00</span></div>
+                                    <div class="weekend">토,일 <span>09:00 - 15:00</span></div>
+                                </div>
+                                <p>🚗 부산 강서구 명지오션시티4로 88</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-3 mb-0">
+                            <small>
+                                ⚠️ 응급상황 시 연락처<br>
+                                • 119 (응급구조)<br>
+                                • 129 (보건복지상담)
+                            </small>
+                        </div>
                     </div>
                 </div>
             </div>
