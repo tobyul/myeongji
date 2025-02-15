@@ -110,6 +110,48 @@
             border-color: #badbcc;
         }
 
+        .operation-hours {
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        .operation-hours p {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .operation-hours .day-label {
+            background-color: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            min-width: 60px;
+            text-align: center;
+            color: #555;
+        }
+
+        .operation-hours .weekday {
+            margin-bottom: 5px;
+        }
+
+        .operation-hours .weekday .day-label {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .operation-hours .weekend .day-label {
+            background-color: #fbe9e7;
+            color: #d84315;
+        }
+
+        .operation-hours .hours {
+            font-weight: 500;
+        }
+
         .visitor-stats .card {
             background-color: white;
             border: none;
@@ -195,19 +237,46 @@
                                         <div class="emergency-item">
                                             <h6>365텐텐이비인후과의원</h6>
                                             <p>📞 051-292-0365</p>
-                                            <p>🕐 365일 10:00 ~ 22:00</p>
+                                            <div class="operation-hours">
+                                                <p class="weekday">
+                                                    <span class="day-label">평일</span>
+                                                    <span class="hours">10:00 - 22:00</span>
+                                                </p>
+                                                <p class="weekend">
+                                                    <span class="day-label">토,일</span>
+                                                    <span class="hours">10:00 - 22:00</span>
+                                                </p>
+                                            </div>
                                             <p>🚗 부산 강서구 명지국제8로 233 더스퀘어 3층 301호</p>
                                         </div>
-                                        <div class="emergency-item mt-3">
+                                        <div class="emergency-item">
                                             <h6>명지아동병원</h6>
                                             <p>📞 051-717-0230</p>
-                                            <p>🕐 월~일 09:00 - 18:00</p>
+                                            <div class="operation-hours">
+                                                <p class="weekday">
+                                                    <span class="day-label">평일</span>
+                                                    <span class="hours">09:00 - 18:00</span>
+                                                </p>
+                                                <p class="weekend">
+                                                    <span class="day-label">토,일</span>
+                                                    <span class="hours">09:00 - 18:00</span>
+                                                </p>
+                                            </div>
                                             <p>🚗 부산 강서구 명지국제8로 240</p>
                                         </div>
-                                        <div class="emergency-item mt-3">
+                                        <div class="emergency-item">
                                             <h6>푸르미소아청소년과의원</h6>
                                             <p>📞 051-204-0012</p>
-                                            <p>🕐 월~금 08:30 - 18:00, 토 08:30 - 14:00</p>
+                                            <div class="operation-hours">
+                                                <p class="weekday">
+                                                    <span class="day-label">평일</span>
+                                                    <span class="hours">08:30 - 18:00</span>
+                                                </p>
+                                                <p class="weekend">
+                                                    <span class="day-label">토</span>
+                                                    <span class="hours">08:30 - 14:00</span>
+                                                </p>
+                                            </div>
                                             <p>🚗 부산 강서구 명지국제8로 257 티에스스퀘어 502호</p>
                                         </div>
                                     </div>
