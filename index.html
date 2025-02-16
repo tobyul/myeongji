@@ -189,13 +189,13 @@
                     </div>
                     <div id="store-${store._id}" class="collapse">
                         <div class="card-body">
-                            ${store.description ? `<p class="card-text"><strong>설명:</strong> ${store.description}</p>` : ''}
-                            ${store.benefit ? `<p class="card-text"><strong>혜택:</strong> <span class="benefit">${store.benefit}</span></p>` : ''}
-                            ${store.code ? `<p class="card-text"><strong>암호:</strong> <span class="text-success">${store.code}</span></p>` : ''}
-                            ${store.contact ? `<p class="card-text"><strong>연락처:</strong> ${store.contact}</p>` : ''}
-                            ${store.site_url ? `<p class="card-text"><strong>사이트:</strong> <a href="${store.site_url}" target="_blank"> ${store.site_url}</a></p>` : ''}
+                            ${store.description ? `<p class="card-text"><strong>ℹ️</strong> ${store.description}</p>` : ''}
+                            ${store.benefit ? `<p class="card-text"><strong>🎁</strong> <span class="benefit">${store.benefit}</span></p>` : ''}
+                            ${store.code ? `<p class="card-text"><strong>🔑</strong> <span class="text-success">${store.code}</span></p>` : ''}
+                            ${store.contact ? `<p class="card-text"><strong>📞</strong> ${store.contact}</p>` : ''}
+                            ${store.site_url ? `<p class="card-text"><strong>🌐</strong> <a href="${store.site_url}" target="_blank"> ${store.site_url}</a></p>` : ''}
                             ${store.address ? `
-                                <p class="card-text"><strong>주소:</strong> ${store.address}</p>
+                                <p class="card-text"><strong>🚗</strong> ${store.address}</p>
                                 <div id="${mapId}" style="width:100%;height:200px;margin-top:10px;"></div>
                             ` : ''}
                         </div>
