@@ -285,12 +285,25 @@
             card.className = 'col-12 col-md-4';
             
             const cardClass = getCategoryColor(store.category);
+
+            // 카테고리에 따른 배지 색상 설정
+            let badgeClass = 'bg-primary'; // 기본값
+            
+            if (store.category === '음식/카페') {
+                badgeClass = 'bg-danger'; // 음식/카페 카테고리는 빨간색(FF6B6B와 유사)
+            } else if (store.category === '생활/편의') {
+                badgeClass = 'bg-primary'; // 생활/편의 카테고리는 파란색(4A90E2와 유사)
+            } else if (store.category === '건강/뷰티') {
+                badgeClass = 'bg-info'; // 건강/뷰티 카테고리는 하늘색(FDA7DF와 유사하진 않지만 부드러운 느낌)
+            } else if (store.category === '기타') {
+                badgeClass = 'bg-success'; // 기타 카테고리는 초록색(4ECDC4와 유사)
+            }
             
             const cardContent = `
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
-                            <span class="badge bg-primary me-2">NEW</span>
+                            <span class="badge ${badgeClass} me-2">NEW</span>
                             <h5 class="card-title mb-0">${store.name}</h5>
                         </div>
                         <h6 class="text-muted">${store.nickname}</h6>
