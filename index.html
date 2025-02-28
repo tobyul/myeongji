@@ -137,6 +137,16 @@
             </nav>
         </div>
 
+        <!-- 최근 등록된 업체 섹션 추가 -->
+        <div class="row mb-4 mt-4">
+            <div class="col-12">
+                <h5 class="text-secondary mb-3">🆕 신규점빵</h5>
+                <div class="row g-3" id="recentStoresContainer">
+                    <!-- 최근 등록된 업체 카드가 여기에 표시됩니다 -->
+                </div>
+            </div>
+        </div>
+
         <!-- 방문자 수 통계 섹션 추가 -->
         <div class="visitor-stats text-center mt-4 mb-4">
             <div class="card">
@@ -171,6 +181,59 @@
     <script>
         let currentCategory = '전체';
         
+        // 페이징 관련 변수 추가
+        const itemsPerPage = 12;
+        let currentPage = 1;
+        let totalStores = [];
+
+        // 지도 초기화 함수
+        function initializeMap(mapId, address) {
+            // 지도 컨테이너가 보이는 상태일 때만 초기화
+            const mapContainer = document.getElementById(mapId);
+            if (!mapContainer || mapContainer.querySelector('.map_canvas')) {
+                return; // 이미 초기화되었거나 컨테이너가 없는 경우
+            }
+            
+            // 지도 초기화 전 로딩 표시
+            mapContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            // 약간의 지연 후 지도 초기화 (DOM이 완전히 렌더링되도록)
+            setTimeout(() => {
+                try {
+                    const options = {
+                        center: new kakao.maps.LatLng(33.450701, 126.570667),
+                        level: 3
+                    };
+                    
+                    const map = new kakao.maps.Map(mapContainer, options);
+                    
+                    // 주소-좌표 변환 객체 생성
+                    const geocoder = new kakao.maps.services.Geocoder();
+
+                    // 주소로 좌표 검색
+                    geocoder.addressSearch(address, function(result, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                            // 마커 생성
+                            const marker = new kakao.maps.Marker({
+                                map: map,
+                                position: coords
+                            });
+
+                            // 지도 중심을 해당 위치로 이동
+                            map.setCenter(coords);
+                        } else {
+                            mapContainer.innerHTML = '<div class="alert alert-warning">주소를 찾을 수 없습니다.</div>';
+                        }
+                    });
+                } catch (error) {
+                    console.error('지도 초기화 오류:', error);
+                    mapContainer.innerHTML = '<div class="alert alert-danger">지도를 불러올 수 없습니다.</div>';
+                }
+            }, 300);
+        }
+
         function createStoreCard(store) {
             const card = document.createElement('div');
             card.className = 'col-12 col-md-6 col-lg-4';
@@ -209,41 +272,91 @@
             if (store.address) {
                 // collapse 이벤트 발생 시 지도 초기화
                 card.querySelector(`[data-bs-target="#store-${store._id}"]`).addEventListener('click', function() {
-                    setTimeout(() => {
-                        // 지도 컨테이너가 보이는 상태일 때만 초기화
-                        const mapContainer = document.getElementById(mapId);
-                        if (!mapContainer.querySelector('.map_canvas')) {
-                            const options = {
-                                center: new kakao.maps.LatLng(33.450701, 126.570667),
-                                level: 3
-                            };
-                            
-                            const map = new kakao.maps.Map(mapContainer, options);
-                            
-                            // 주소-좌표 변환 객체 생성
-                            const geocoder = new kakao.maps.services.Geocoder();
-
-                            // 주소로 좌표 검색
-                            geocoder.addressSearch(store.address, function(result, status) {
-                                if (status === kakao.maps.services.Status.OK) {
-                                    const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-                                    // 마커 생성
-                                    const marker = new kakao.maps.Marker({
-                                        map: map,
-                                        position: coords
-                                    });
-
-                                    // 지도 중심을 해당 위치로 이동
-                                    map.setCenter(coords);
-                                }
-                            });
-                        }
-                    }, 100);
+                    setTimeout(() => initializeMap(mapId, store.address), 100);
                 });
             }
             
             return card;
+        }
+
+        // 최근 등록된 업체용 카드 생성 함수
+        function createRecentStoreCard(store) {
+            const card = document.createElement('div');
+            card.className = 'col-12 col-md-4';
+            
+            const cardClass = getCategoryColor(store.category);
+            
+            const cardContent = `
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-primary me-2">NEW</span>
+                            <h5 class="card-title mb-0">${store.name}</h5>
+                        </div>
+                        <h6 class="text-muted">${store.nickname}</h6>
+                        ${store.description ? 
+                            `<p class="card-text small text-truncate">${store.description}</p>` 
+                            : ''}
+                        ${store.benefit ? 
+                            `<p class="card-text small"><span class="text-danger">혜택: ${store.benefit}</span></p>` 
+                            : ''}
+                        <div class="text-end mt-2">
+                            <button class="btn btn-sm btn-outline-secondary view-details" 
+                               data-store-id="${store._id}">자세히 보기</button>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent text-muted small">
+                        <i class="bi bi-tag"></i> ${store.category}
+                    </div>
+                </div>
+            `;
+            
+            card.innerHTML = cardContent;
+            
+            return card;
+        }
+
+        // 페이지가 모두 로드된 후 이벤트 리스너 등록하는 함수
+        function setupRecentStoreButtons() {
+            document.querySelectorAll('.view-details').forEach(button => {
+                button.addEventListener('click', function() {
+                    const storeId = this.getAttribute('data-store-id');
+                    
+                    // 해당 ID의 카드 찾기
+                    const targetHeader = document.querySelector(`[data-bs-target="#store-${storeId}"]`);
+                    
+                    if (targetHeader) {
+                        // 카드를 화면에 표시하기 위해 스크롤
+                        targetHeader.scrollIntoView({ behavior: 'smooth' });
+                        
+                        // 0.5초 후 카드 펼치기
+                        setTimeout(() => {
+                            targetHeader.click();
+                        }, 500);
+                    } else {
+                        // 현재 페이지에 없는 경우 전체 목록에서 검색
+                        const foundIndex = totalStores.findIndex(store => store._id == storeId);
+                        
+                        if (foundIndex >= 0) {
+                            // 해당 업체가 있는 페이지 계산 및 이동
+                            const pageNumber = Math.floor(foundIndex / itemsPerPage) + 1;
+                            renderPage(pageNumber);
+                            renderPagination();
+                            
+                            // 페이지 렌더링 후 약간의 지연을 두고 카드 찾기 및 클릭
+                            setTimeout(() => {
+                                const card = document.querySelector(`[data-bs-target="#store-${storeId}"]`);
+                                if (card) {
+                                    card.scrollIntoView({ behavior: 'smooth' });
+                                    setTimeout(() => {
+                                        card.click();
+                                    }, 500);
+                                }
+                            }, 300);
+                        }
+                    }
+                });
+            });
         }
 
         function getCategoryColor(category) {
@@ -256,10 +369,34 @@
             return categoryClasses[category] || '';
         }
 
-        // 페이징 관련 변수 추가
-        const itemsPerPage = 12;
-        let currentPage = 1;
-        let totalStores = [];
+        // 최근 등록된 업체 불러오기
+        async function fetchRecentStores() {
+            try {
+                const response = await fetch('https://gw.ecron.co.kr:81/api/stores/recent?limit=3');
+                const recentStores = await response.json();
+                
+                const container = document.getElementById('recentStoresContainer');
+                container.innerHTML = '';
+                
+                if (recentStores.length === 0) {
+                    // 최근 등록된 업체가 없을 경우 섹션 숨기기
+                    document.querySelector('.row.mb-4.mt-4').style.display = 'none';
+                    return;
+                }
+                
+                recentStores.forEach(store => {
+                    const storeCard = createRecentStoreCard(store);
+                    container.appendChild(storeCard);
+                });
+                
+                // 버튼에 이벤트 리스너 등록
+                setupRecentStoreButtons();
+            } catch (error) {
+                console.error('최근 업체 조회 실패:', error);
+                // 오류 발생 시 섹션 숨기기
+                document.querySelector('.row.mb-4.mt-4').style.display = 'none';
+            }
+        }
 
         // fetchStores 함수 수정
         function fetchStores(category = '전체', searchTerm = '') {
@@ -451,6 +588,7 @@
         // 페이지 로드 시 초기 데이터 로드
         document.addEventListener('DOMContentLoaded', () => {
             fetchStores();
+            fetchRecentStores(); // 최근 등록된 업체 로드
             logVisit();
             displayVisitorCount();
         });
