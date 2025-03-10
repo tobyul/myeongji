@@ -12,7 +12,7 @@
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=67015c72ec5b9ba4909f201cc8aa8601&libraries=services"></script>
     <style>
         body {
-            background-color: #FFFACD; /* 부드러운 옐로우 */
+            background-color: #fcf8e8; /* 봄 느낌의 배경색으로 변경 */
         }
         
         .card-header {
@@ -27,19 +27,19 @@
         }
         
         .card-header.category-food-cafe {
-            border-left-color: #FFC1CC;  /* 따뜻한 핑크 */
+            border-left-color: #FF9E7D;  /* 살구색/코랄로 변경 */
         }
         
         .card-header.category-life-convenience {
-            border-left-color: #B2F2BB;  /* 밝은 민트 */
+            border-left-color: #72C1E8;  /* 하늘색으로 변경 */
         }
         
         .card-header.category-health-beauty {
-            border-left-color: #E5D0FF;  /* 연한 라벤더 */
+            border-left-color: #FFACC7;  /* 벚꽃색으로 변경 */
         }
         
         .card-header.category-etc {
-            border-left-color: #FFB347;  /* 밝은 오렌지 */
+            border-left-color: #A0E7A0;  /* 연한 민트/잎새색으로 변경 */
         }
         
         .card-header .card-title {
@@ -52,21 +52,29 @@
         }
         
         .benefit {
-            color: #dc3545;
+            color: #FF9E7D; /* 혜택 텍스트 색상 변경 */
         }
         
-        /* 카드 호버 효과 */
+        /* 카드 호버 효과 향상 */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
         .card:hover {
             transform: translateY(-5px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
 
         .logo-container {
             text-align: center;
             padding: 20px 0;
-            background-color: white;
+            background: linear-gradient(to right, #fcf8e8, #f9f7f2); /* 그라데이션 배경 추가 */
             margin-bottom: 1px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
         .logo-container img {
@@ -77,11 +85,12 @@
         .visitor-stats .card {
             background-color: white;
             border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: 12px;
         }
 
         .visitor-stats .card-body {
-            padding: 1.25rem;
+            padding: 1.5rem;
         }
 
         .visitor-stats h5 {
@@ -90,14 +99,93 @@
         }
 
         footer {
-            border-top: 1px solid #dee2e6;
+            border-top: 1px solid #f0e6d2; /* 봄 색상 테두리 */
             position: relative;
             margin-top: auto;
             width: 100%;
-            background-color: #E5D0FF; /* 연한 라벤더 */
+            background-color: #fff8ef; /* 부드러운 크림색 */
+        }
+        
+        /* 봄 테마 버튼 스타일 */
+        .btn-secondary, .btn-outline-secondary.active {
+            background-color: #72C1E8 !important;
+            border-color: #72C1E8 !important;
+            color: white !important;
+        }
+        
+        .btn-outline-secondary {
+            color: #72C1E8 !important;
+            border-color: #72C1E8 !important;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #e8f4f9 !important;
+            color: #72C1E8 !important;
+        }
+        
+        /* 페이지네이션 색상 업데이트 */
+        .page-item.active .page-link {
+            background-color: #72C1E8 !important;
+            border-color: #72C1E8 !important;
+        }
+        
+        .page-link {
+            color: #72C1E8 !important;
+        }
+        
+        /* 최근 등록된 업체 카드 강화 */
+        #recentStoresContainer .card {
+            border-radius: 12px;
+            border: 1px solid #f0e6d2;
+            overflow: hidden;
+        }
+        
+        /* 봄 테마의 뱃지 색상 */
+        .badge.bg-danger {
+            background-color: #FF9E7D !important;
+        }
+        
+        .badge.bg-primary {
+            background-color: #72C1E8 !important;
+        }
+        
+        .badge.bg-info {
+            background-color: #FFACC7 !important;
+        }
+        
+        .badge.bg-success {
+            background-color: #A0E7A0 !important;
+        }
+        
+        /* 검색 입력 폼 개선 */
+        #searchInput {
+            border-color: #f0e6d2;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        #searchInput:focus {
+            border-color: #72C1E8;
+            box-shadow: 0 0 0 0.2rem rgba(114, 193, 232, 0.25);
+        }
+        
+        /* 신규 점빵 섹션 헤더 개선 */
+        h5.text-secondary {
+            color: #FF9E7D !important;
+            font-weight: 600;
+        }
+        
+        /* 자세히 보기 버튼 개선 */
+        .btn-outline-secondary.view-details {
+            color: #72C1E8 !important;
+            border-color: #72C1E8 !important;
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+        }
+        
+        .btn-outline-secondary.view-details:hover {
+            background-color: #e8f4f9 !important;
         }
     </style>
-
 </head>
 <body>
     <a href="index.html" style="text-decoration: none;">
