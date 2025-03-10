@@ -446,36 +446,31 @@
             return card;
         }
 
-        // 최근 등록된 업체용 카드 생성 함수
-        function createRecentStoreCard(store) {
+        function createEventStoreCard(store) {
             const card = document.createElement('div');
             card.className = 'col-12 col-md-4';
             
-            const cardClass = getCategoryColor(store.category);
-
             // 카테고리에 따른 배지 색상 설정
-            let badgeClass = 'bg-primary'; // 기본값
-            
-            if (store.category === '음식/카페') {
-                badgeClass = 'bg-danger'; // 음식/카페 카테고리
-            } else if (store.category === '생활/편의') {
-                badgeClass = 'bg-primary'; // 생활/편의 카테고리
-            } else if (store.category === '건강/뷰티') {
-                badgeClass = 'bg-info'; // 건강/뷰티 카테고리
-            } else if (store.category === '기타') {
-                badgeClass = 'bg-success'; // 기타 카테고리
-            }
+            let badgeClass = 'bg-warning'; // 이벤트용 기본 배지 색상
             
             const cardContent = `
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
-                            <span class="badge ${badgeClass} me-2">NEW</span>
+                            <span class="badge ${badgeClass} me-2">EVENT</span>
                             <h5 class="card-title mb-0">${store.name}</h5>
                         </div>
                         <h6 class="text-muted">${store.nickname}</h6>
                         ${store.description ? 
                             `<p class="card-text small text-truncate">${store.description}</p>` 
+                            : ''}
+                        ${store.event_content ? 
+                            `<div class="alert alert-warning p-2 my-2">
+                                <strong>🎉 이벤트: </strong>${store.event_content}
+                                <div class="small mt-1 text-muted">
+                                    ${new Date(store.start_date).toLocaleDateString()} ~ ${new Date(store.end_date).toLocaleDateString()}
+                                </div>
+                            </div>` 
                             : ''}
                         ${store.benefit ? 
                             `<p class="card-text small"><span class="text-danger">혜택: ${store.benefit}</span></p>` 
