@@ -799,6 +799,7 @@
         // 페이지 로드 시 초기 데이터 로드
         document.addEventListener('DOMContentLoaded', () => {
             fetchStores();
+            fetchEventStores(); // 행사 중인 업체 로드
             fetchRecentStores(); // 최근 등록된 업체 로드
             logVisit();
             displayVisitorCount();
