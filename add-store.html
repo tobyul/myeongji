@@ -2,241 +2,283 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>명지국제자유방 이웃점빵 - 신규점빵 등록</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>점빵 등록/수정</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- 커스텀 CSS -->
     <style>
         body {
-            background-color: #FFF6E3;
-            color: #333;
-            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
         }
-
-        .logo-container {
-            text-align: center;
-            padding: 20px 0;
-            background: linear-gradient(to right, #FFF6E3, #FFFFFF);
-            margin-bottom: 1px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+        .container {
+            max-width: 600px;
+            margin-top: 2rem;
         }
-
-        .logo-container img {
-            max-width: 200px;
-            max-height: 180px;
-        }
-
-        .form-container {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 40px;
-        }
-
         .form-label {
             font-weight: 500;
-            color: #4A90E2;
         }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #BFECFF;
-            box-shadow: 0 0 0 0.2rem rgba(191, 236, 255, 0.25);
+        .required::after {
+            content: '*';
+            color: red;
+            margin-left: 4px;
         }
-
-        .btn-primary {
-            background-color: #BFECFF;
-            border-color: #95D8FF;
-            color: #333;
-            font-weight: 500;
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            display: none;
+            margin-top: 0.5rem;
         }
-
-        .btn-primary:hover {
-            background-color: #95D8FF;
-            border-color: #7CC4FF;
-            color: #333;
-        }
-
-        .page-title {
-            color: #4A90E2;
-            font-weight: 600;
-            margin-bottom: 30px;
-        }
-
-        footer {
-            border-top: 1px solid #FFE0B2;
-            background-color: #FFF6E3;
-            padding: 15px 0;
-        }
-
-        .required-field::after {
-            content: " *";
-            color: #d9534f;
-        }
-
-        #userInfoBar {
-            background-color: #FFF6E3;
-            border-bottom: 1px solid #FFE0B2;
-            padding: 10px 20px;
-        }
-
-        #loggedInUser {
-            font-weight: 500;
-            color: #4A90E2;
+        .spinner-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <a href="index.html" style="text-decoration: none;">
-        <div class="logo-container">
-            <img src="images/logo.png" alt="명지국제자유방 이웃점빵 로고">
-        </div>
-    </a>
-
-    <!-- 상단 사용자 정보 바 -->
-    <div id="userInfoBar" class="d-flex justify-content-end align-items-center">
-        <span id="loggedInUser" class="me-3"></span>
-        <button id="logoutButton" class="btn btn-sm btn-outline-secondary">로그아웃</button>
-    </div>
-
-    <div class="container py-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <h2 class="page-title text-center">신규점빵 등록</h2>
-
-                <div class="form-container">
-                    <form id="storeForm">
-                        <!-- Form Fields (카테고리, 점빵명 등 동일 생략) -->
-                        <div class="mb-3">
-                            <label for="category" class="form-label required-field">카테고리</label>
-                            <select class="form-select" id="category" name="category" required>
-                                <option value="" selected disabled>카테고리 선택</option>
-                                <option value="음식/카페">음식/카페</option>
-                                <option value="생활/편의">생활/편의</option>
-                                <option value="건강/뷰티">건강/뷰티</option>
-                                <option value="기타">기타</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="name" class="form-label required-field">점빵명</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="nickname" class="form-label required-field">점주닉네임</label>
-                            <input type="text" class="form-control" id="nickname" name="nickname" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">점빵 설명</label>
-                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="benefit" class="form-label">점빵 제공 혜택</label>
-                            <input type="text" class="form-control" id="benefit" name="benefit">
-                        </div>
-                        <div class="mb-3">
-                            <label for="code" class="form-label">점빵 암호</label>
-                            <input type="text" class="form-control" id="code" name="code">
-                        </div>
-                        <div class="mb-3">
-                            <label for="contact" class="form-label">연락처</label>
-                            <input type="text" class="form-control" id="contact" name="contact">
-                        </div>
-                        <div class="mb-3">
-                            <label for="address" class="form-label">주소</label>
-                            <input type="text" class="form-control" id="address" name="address">
-                        </div>
-                        <div class="mb-3">
-                            <label for="site" class="form-label">웹사이트</label>
-                            <input type="url" class="form-control" id="site" name="site">
-                        </div>
-
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="index.html" class="btn btn-outline-secondary me-md-2">취소</a>
-                            <button type="submit" class="btn btn-primary">등록하기</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- 알림 -->
-                <div class="alert alert-success alert-dismissible fade show d-none" id="successAlert">
-                    <strong>등록 성공!</strong> 새로운 점빵이 등록되었습니다.
-                    <a href="index.html" class="alert-link">메인 페이지로 돌아가기</a>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <div class="alert alert-danger alert-dismissible fade show d-none" id="errorAlert">
-                    <strong>등록 실패!</strong> <span id="errorMessage">오류가 발생했습니다.</span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+    <div class="container">
+        <h2 class="mb-4 text-center" id="formTitle">점빵 등록</h2>
+        <form id="storeForm">
+            <div class="mb-3">
+                <label for="category" class="form-label required">카테고리</label>
+                <select class="form-select" id="category" name="category" required>
+                    <option value="">선택하세요</option>
+                    <option value="음식/카페">음식/카페</option>
+                    <option value="생활/편의">생활/편의</option>
+                    <option value="건강/뷰티">건강/뷰티</option>
+                    <option value="기타">기타</option>
+                </select>
             </div>
+            <div class="mb-3">
+                <label for="name" class="form-label required">점빵명</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="nickname" class="form-label required">닉네임</label>
+                <input type="text" class="form-control" id="nickname" name="nickname" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">설명</label>
+                <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="benefit" class="form-label">혜택</label>
+                <input type="text" class="form-control" id="benefit" name="benefit">
+            </div>
+            <div class="mb-3">
+                <label for="code" class="form-label">코드</label>
+                <input type="text" class="form-control" id="code" name="code">
+            </div>
+            <div class="mb-3">
+                <label for="contact" class="form-label">연락처</label>
+                <input type="text" class="form-control" id="contact" name="contact">
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">주소</label>
+                <input type="text" class="form-control" id="address" name="address">
+            </div>
+            <div class="mb-3">
+                <label for="site_url" class="form-label">웹사이트</label>
+                <input type="url" class="form-control" id="site_url" name="site_url">
+            </div>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-secondary" onclick="cancel()">취소</button>
+                <button type="submit" class="btn btn-primary" id="submitButton">저장</button>
+            </div>
+        </form>
+    </div>
+    <!-- 로딩 스피너 -->
+    <div class="spinner-container" id="spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">로딩 중...</span>
         </div>
     </div>
-
-    <footer class="bg-white py-3 mt-4">
-        <div class="container text-center">
-            <small class="text-muted">© 2025 삼정더베스트/록커. All Rights Reserved.</small>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
-        // 폼 제출 시
-        document.getElementById('storeForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+        const API_BASE_URL = 'https://gw.ecron.co.kr:81';
+        let mode = 'add';
+        let storeId = null;
 
-            const formData = new FormData(event.target);
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 인증 확인
+            if (!(await checkAuth())) {
+                redirectToLogin();
+                return;
+            }
 
-            const storeData = {
-                category: formData.get('category'),
-                name: formData.get('name'),
-                nickname: formData.get('nickname'),
-                description: formData.get('description'),
-                benefit: formData.get('benefit'),
-                code: formData.get('code'),
-                contact: formData.get('contact'),
-                address: formData.get('address'),
-                site: formData.get('site')
-            };
+            // URL 파라미터 파싱
+            const params = new URLSearchParams(window.location.search);
+            mode = params.get('mode') || 'add';
+            storeId = params.get('id');
 
-            try {
-                const method = isEditMode ? 'PUT' : 'POST';
-                const url = isEditMode ? `https://gw.ecron.co.kr:81/api/stores/${selectedStoreId}` : 'https://gw.ecron.co.kr:81/api/stores';
-                
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(storeData)
-                });
+            // 제목 설정
+            document.getElementById('formTitle').textContent = mode === 'edit' ? '점빵 수정' : '점빵 등록';
 
-                const data = await response.json();
-                if (response.ok) {
-                    document.getElementById('successAlert').classList.remove('d-none');
-                    loadStores(); // 등록 후 목록 갱신
-                } else {
-                    document.getElementById('errorMessage').textContent = data.message || '오류 발생';
-                    document.getElementById('errorAlert').classList.remove('d-none');
-                }
-            } catch (e) {
-                console.error('점빵 등록 중 오류 발생:', e);
-                document.getElementById('errorAlert').classList.remove('d-none');
+            // 수정 모드면 데이터 로드
+            if (mode === 'edit' && storeId) {
+                await loadStoreData(storeId);
             }
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const { username } = checkAuth();
-            document.getElementById('loggedInUser').textContent = `${username}님`;
+        // 인증 확인
+        async function checkAuth() {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                return false;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/check`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                return data.authenticated;
+            } catch (error) {
+                console.error('인증 확인 오류:', error);
+                return false;
+            }
+        }
+
+        // 로그인 페이지로 리디렉션
+        function redirectToLogin() {
+            localStorage.removeItem('auth_token');
+            window.location.href = 'login.html'; // 로그인 페이지 URL
+        }
+
+        // 점빵 데이터 로드 (수정 모드)
+        async function loadStoreData(id) {
+            try {
+                showSpinner(true);
+                const token = localStorage.getItem('auth_token');
+                const response = await fetch(`${API_BASE_URL}/api/stores/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.status === 401) {
+                    redirectToLogin();
+                    return;
+                }
+                if (!response.ok) {
+                    throw new Error('데이터 로드 실패');
+                }
+                const data = await response.json();
+                // 폼 채우기
+                document.getElementById('category').value = data.category || '';
+                document.getElementById('name').value = data.name || '';
+                document.getElementById('nickname').value = data.nickname || '';
+                document.getElementById('description').value = data.description || '';
+                document.getElementById('benefit').value = data.benefit || '';
+                document.getElementById('code').value = data.code || '';
+                document.getElementById('contact').value = data.contact || '';
+                document.getElementById('address').value = data.address || '';
+                document.getElementById('site_url').value = data.site_url || '';
+            } catch (error) {
+                showError('데이터를 불러오지 못했습니다.');
+                console.error('데이터 로드 오류:', error);
+            } finally {
+                showSpinner(false);
+            }
+        }
+
+        // 폼 제출 처리
+        document.getElementById('storeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            showSpinner(true);
+            clearError();
+
+            // 폼 데이터 수집
+            const formData = {
+                category: document.getElementById('category').value,
+                name: document.getElementById('name').value.trim(),
+                nickname: document.getElementById('nickname').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                benefit: document.getElementById('benefit').value.trim(),
+                code: document.getElementById('code').value.trim(),
+                contact: document.getElementById('contact').value.trim(),
+                address: document.getElementById('address').value.trim(),
+                site_url: document.getElementById('site_url').value.trim()
+            };
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                let response;
+                if (mode === 'edit' && storeId) {
+                    // 수정 요청
+                    response = await fetch(`${API_BASE_URL}/api/stores/${storeId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    // 등록 요청
+                    response = await fetch(`${API_BASE_URL}/api/stores`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                }
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 성공 시 store-list.html로 이동
+                    window.location.href = 'store-list.html';
+                } else {
+                    if (response.status === 401) {
+                        redirectToLogin();
+                    } else {
+                        showError(data.error || '요청 처리 중 오류가 발생했습니다.');
+                    }
+                }
+            } catch (error) {
+                showError('서버와의 연결에 실패했습니다.');
+                console.error('요청 오류:', error);
+            } finally {
+                submitButton.disabled = false;
+                showSpinner(false);
+            }
         });
 
-        document.getElementById('logoutButton').addEventListener('click', () => {
-            localStorage.clear();
-            window.location.href = 'login.html';
-        });
+        // 취소 버튼
+        function cancel() {
+            window.location.href = 'store-list.html';
+        }
+
+        // 오류 메시지 표시
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        // 오류 메시지 지우기
+        function clearError() {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = '';
+            errorMessage.style.display = 'none';
+        }
+
+        // 스피너 표시/숨기기
+        function showSpinner(show) {
+            document.getElementById('spinner').style.display = show ? 'block' : 'none';
+        }
     </script>
 </body>
 </html>
