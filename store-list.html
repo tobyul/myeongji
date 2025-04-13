@@ -91,7 +91,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.0.1/dist/ag-grid-community.min.js"></script>
     <script>
         // 인증 점검
-        const token = LocalStorage.getItem('auth_token');
+        const token = localStorage.getItem('auth_token');
         if (!token) {
             window.location.href = 'login.html';
         }
@@ -118,7 +118,7 @@
             onRowClicked: (event) => {
                 const store = event.data;
                 console.log('선택된 점빵:', store); // 디버깅용
-                LocalStorage.setItem('selectedStore', JSON.stringify({
+                localStorage.setItem('selectedStore', JSON.stringify({
                     ...store,
                     site: store.site_url || store.site // site_url을 site로 매핑
                 }));
@@ -164,24 +164,24 @@
                 console.error('목록 로드 실패:', e);
                 document.getElementById('errorAlert').textContent = `목록 로드 실패: ${e.message}`;
                 document.getElementById('errorAlert').classList.remove('d-none');
-                LocalStorage.clear();
+                localStorage.clear();
                 window.location.href = 'login.html';
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const loggedInUser = LocalStorage.getItem('username');
+            const loggedInUser = localStorage.getItem('username');
             if (loggedInUser) {
                 document.getElementById('loggedInUser').textContent = `${loggedInUser}님`;
             } else {
-                LocalStorage.clear();
+                localStorage.clear();
                 window.location.href = 'login.html';
             }
             loadStores();
         });
 
         document.getElementById('logoutButton').addEventListener('click', () => {
-            LocalStorage.clear();
+            localStorage.clear();
             window.location.href = 'login.html';
         });
     </script>
