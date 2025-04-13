@@ -159,7 +159,7 @@
                     console.log('Response:', responseData); // 디버깅
 
                     if (!response.ok) {
-                        throw new Error(responseData.error || '로그인 실패');
+                        throw new Error(responseData.error || `로그인 실패: ${response.status}`);
                     }
 
                     localStorage.setItem('isLoggedIn', 'true');
