@@ -52,6 +52,9 @@
             background-color: #FFF6E3;
             padding: 15px 0;
         }
+        .alert {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -73,6 +76,9 @@
             <a href="add-store.html" class="btn btn-primary">신규 등록</a>
         </div>
         <div id="storeGrid" class="ag-theme-alpine" style="height: 500px; width: 100%;"></div>
+        <div class="alert alert-danger d-none" id="errorAlert">
+            점빵 목록을 불러오지 못했습니다. 다시 로그인해주세요.
+        </div>
     </div>
 
     <footer class="bg-white py-3">
@@ -116,22 +122,36 @@
             gridApi = window.agGrid.createGrid(gridDiv, gridOptions);
         } else {
             console.error('AG Grid 라이브러리가 로드되지 않았습니다.');
+            document.getElementById('errorAlert').textContent = '그리드 초기화에 실패했습니다.';
+            document.getElementById('errorAlert').classList.remove('d-none');
         }
 
         async function loadStores() {
             try {
                 const response = await fetch('https://gw.ecron.co.kr:81/api/stores', {
-                    method: 'GET'
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 const data = await response.json();
+                console.log('API 응답:', data); // 디버깅용 로그
                 if (response.ok) {
-                    gridApi.setGridOption('rowData', data.stores);
+                    if (Array.isArray(data.stores)) {
+                        gridApi.setGridOption('rowData', data.stores);
+                    } else {
+                        console.error('stores가 배열이 아닙니다:', data.stores);
+                        document.getElementById('errorAlert').classList.remove('d-none');
+                    }
                 } else {
+                    console.error('API 오류:', response.status, data);
+                    document.getElementById('errorAlert').classList.remove('d-none');
                     localStorage.clear();
                     window.location.href = 'login.html';
                 }
             } catch (e) {
                 console.error('목록 로드 실패:', e);
+                document.getElementById('errorAlert').classList.remove('d-none');
                 localStorage.clear();
                 window.location.href = 'login.html';
             }
@@ -152,8 +172,6 @@
             localStorage.clear();
             window.location.href = 'login.html';
         });
-
-        loadStores();
     </script>
 </body>
 </html>
