@@ -110,25 +110,22 @@
             }
         };
 
-        // AG Grid 디버깅
-        if (!window.agGrid) {
-            console.error('AG Grid 라이브러리가 로드되지 않았습니다.');
+        const gridDiv = document.getElementById('storeGrid');
+        let gridApi;
+        if (window.agGrid && window.agGrid.createGrid) {
+            gridApi = window.agGrid.createGrid(gridDiv, gridOptions);
         } else {
-            const gridDiv = document.getElementById('storeGrid');
-            new window.agGrid.Grid(gridDiv, gridOptions);
+            console.error('AG Grid 라이브러리가 로드되지 않았습니다.');
         }
 
         async function loadStores() {
             try {
                 const response = await fetch('https://gw.ecron.co.kr:81/api/stores', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    method: 'GET'
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    gridOptions.api.setRowData(data.stores);
+                    gridApi.setGridOption('rowData', data.stores);
                 } else {
                     localStorage.clear();
                     window.location.href = 'login.html';
