@@ -99,10 +99,16 @@
         // AG Grid 초기화
         const gridOptions = {
             columnDefs: [
+                { headerName: 'ID', field: '_id', sortable: true },
                 { headerName: '카테고리', field: 'category', sortable: true },
                 { headerName: '점빵명', field: 'name', sortable: true },
-                { headerName: '점주닉네임', field: 'nickname', sortable: true },
-                { headerName: '연락처', field: 'contact', sortable: true }
+                { headerName: '닉네임', field: 'nickname', sortable: true },
+                { headerName: '설명', field: 'description', sortable: true },
+                { headerName: '혜택', field: 'benefit', sortable: true },
+                { headerName: '암호', field: 'code', sortable: true },
+                { headerName: '연락처', field: 'contact', sortable: true },
+                { headerName: '주소', field: 'address', sortable: true },
+                { headerName: '사이트', field: 'site_url', sortable: true },
             ],
             defaultColDef: {
                 resizable: true,
@@ -149,12 +155,6 @@
                     } else {
                         throw new Error('유효한 점빵 데이터가 없습니다.');
                     }
-                    // site_url을 site로 매핑
-                    const mappedStores = stores.map(store => ({
-                        ...store,
-                        site: store.site_url || store.site,
-                        id: store._id // _id를 id로 매핑
-                    }));
                     gridApi.setGridOption('rowData', mappedStores);
                     console.log('로드된 데이터:', mappedStores); // 디버깅용
                 } else {
