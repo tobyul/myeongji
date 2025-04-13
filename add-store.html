@@ -212,6 +212,7 @@
                 try {
                     const token = localStorage.getItem('auth_token');
                     console.log('Stored token:', token);
+                    console.log('Token length:', token ? token.length : 'null');
                     if (!token) {
                         console.log('No token found, redirecting to login');
                         errorMessage.textContent = '로그인 상태를 확인할 수 없습니다.';
@@ -226,7 +227,7 @@
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
+                            'Authorization': `Bearer ${token.trim()}` // 공백 제거
                         }
                     });
                     console.log('Response status:', response.status);
@@ -234,7 +235,7 @@
                     console.log('Auth check:', data);
 
                     if (!response.ok || !data.authenticated) {
-                        console.log('Authentication failed:', data.message);
+                        console.log('Authentication failed:', data.message || 'No auth');
                         errorMessage.textContent = data.message || '로그인 상태를 확인할 수 없습니다.';
                         errorAlert.classList.remove('d-none');
                         setTimeout(() => {
