@@ -161,7 +161,7 @@
                     if (response.ok && responseData.token) {
                         localStorage.setItem('auth_token', responseData.token);
                         localStorage.setItem('username', responseData.username || 'unknown');
-                        window.location.href = 'add-store.html';
+                        window.location.href = 'store-list.html';
                     }
 
                 } catch (error) {
