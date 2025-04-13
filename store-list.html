@@ -164,8 +164,6 @@
                 console.error('목록 로드 실패:', e);
                 document.getElementById('errorAlert').textContent = `목록 로드 실패: ${e.message}`;
                 document.getElementById('errorAlert').classList.remove('d-none');
-                localStorage.clear();
-                window.location.href = 'login.html';
             }
         }
 
