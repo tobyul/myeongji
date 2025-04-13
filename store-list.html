@@ -169,7 +169,7 @@
                     }
                 });
                 const data = await response.json();
-                console.log('API 응답:', data);
+                //console.log('API 응답:', data);
                 gridApi.hideOverlay();
                 if (response.ok) {
                     let stores;
@@ -185,7 +185,7 @@
                     } else {
                         gridApi.setGridOption('rowData', stores);
                     }
-                    console.log('로드된 데이터:', stores);
+                    //console.log('로드된 데이터:', stores);
                 } else {
                     throw new Error(`API 오류: ${response.status} ${data.message || ''}`);
                 }
