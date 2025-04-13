@@ -111,7 +111,11 @@
             rowSelection: 'single',
             onRowClicked: (event) => {
                 const store = event.data;
-                localStorage.setItem('selectedStore', JSON.stringify(store));
+                console.log('선택된 점빵:', store); // 디버깅용
+                localStorage.setItem('selectedStore', JSON.stringify({
+                    ...store,
+                    site: store.site_url || store.site // site_url을 site로 매핑
+                }));
                 window.location.href = 'add-store.html?mode=edit';
             }
         };
@@ -137,20 +141,28 @@
                 const data = await response.json();
                 console.log('API 응답:', data); // 디버깅용 로그
                 if (response.ok) {
-                    if (Array.isArray(data.stores)) {
-                        gridApi.setGridOption('rowData', data.stores);
+                    let stores;
+                    if (Array.isArray(data)) {
+                        stores = data; // 직접 배열인 경우
+                    } else if (Array.isArray(data.stores)) {
+                        stores = data.stores; // { stores: [...] } 형식
                     } else {
-                        console.error('stores가 배열이 아닙니다:', data.stores);
-                        document.getElementById('errorAlert').classList.remove('d-none');
+                        throw new Error('유효한 점빵 데이터가 없습니다.');
                     }
+                    // site_url을 site로 매핑
+                    const mappedStores = stores.map(store => ({
+                        ...store,
+                        site: store.site_url || store.site,
+                        id: store._id // _id를 id로 매핑
+                    }));
+                    gridApi.setGridOption('rowData', mappedStores);
+                    console.log('로드된 데이터:', mappedStores); // 디버깅용
                 } else {
-                    console.error('API 오류:', response.status, data);
-                    document.getElementById('errorAlert').classList.remove('d-none');
-                    localStorage.clear();
-                    window.location.href = 'login.html';
+                    throw new Error(`API 오류: ${response.status} ${data.message || ''}`);
                 }
             } catch (e) {
                 console.error('목록 로드 실패:', e);
+                document.getElementById('errorAlert').textContent = `목록 로드 실패: ${e.message}`;
                 document.getElementById('errorAlert').classList.remove('d-none');
                 localStorage.clear();
                 window.location.href = 'login.html';
