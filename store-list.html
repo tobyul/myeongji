@@ -120,16 +120,16 @@
         // AG Grid 초기화
         const gridOptions = {
             columnDefs: [
-                { headerName: 'ID', field: '_id', sortable: true, width: 100 },
-                { headerName: '카테고리', field: 'category', sortable: true, width: 120 },
-                { headerName: '점빵명', field: 'name', sortable: true, width: 150 },
-                { headerName: '닉네임', field: 'nickname', sortable: true, width: 150 },
-                { headerName: '설명', field: 'description', sortable: true, width: 200, tooltipField: 'description' },
-                { headerName: '혜택', field: 'benefit', sortable: true, width: 150, tooltipField: 'benefit' },
-                { headerName: '암호', field: 'code', sortable: true, width: 120 },
-                { headerName: '연락처', field: 'contact', sortable: true, width: 150 },
-                { headerName: '주소', field: 'address', sortable: true, width: 200, tooltipField: 'address' },
-                { headerName: '사이트', field: 'site_url', sortable: true, width: 150, tooltipField: 'site_url' }
+                { headerName: 'ID', field: '_id', sortable: true, width: 80, minWidth: 60, suppressSizeToFit: false },
+                { headerName: '점빵명', field: 'name', sortable: true, width: 150, minWidth: 120, suppressSizeToFit: false },
+                { headerName: '카테고리', field: 'category', sortable: true, width: 120, hideOnMobile: true },
+                { headerName: '닉네임', field: 'nickname', sortable: true, width: 150, hideOnMobile: true },
+                { headerName: '설명', field: 'description', sortable: true, width: 200, hideOnMobile: true, tooltipField: 'description' },
+                { headerName: '혜택', field: 'benefit', sortable: true, width: 150, hideOnMobile: true, tooltipField: 'benefit' },
+                { headerName: '암호', field: 'code', sortable: true, width: 120, hideOnMobile: true },
+                { headerName: '연락처', field: 'contact', sortable: true, width: 150, hideOnMobile: true },
+                { headerName: '주소', field: 'address', sortable: true, width: 200, hideOnMobile: true, tooltipField: 'address' },
+                { headerName: '사이트', field: 'site_url', sortable: true, width: 150, hideOnMobile: true, tooltipField: 'site_url' }
             ],
             defaultColDef: {
                 resizable: true,
@@ -148,15 +148,56 @@
             }
         };
 
-        const gridDiv = document.getElementById('storeGrid');
-        let gridApi;
-        if (window.agGrid && window.agGrid.createGrid) {
-            gridApi = window.agGrid.createGrid(gridDiv, gridOptions);
-        } else {
-            console.error('AG Grid 라이브러리가 로드되지 않았습니다.');
-            document.getElementById('errorAlert').textContent = '그리드 초기화에 실패했습니다.';
-            document.getElementById('errorAlert').classList.remove('d-none');
+        // 반응형 그리드 설정 함수
+        function setupResponsiveGrid() {
+            const mobileBreakpoint = 768; // 모바일 기준 너비
+            
+            function adjustColumnsForScreenSize() {
+                const windowWidth = window.innerWidth;
+                const isMobile = windowWidth < mobileBreakpoint;
+                
+                if (gridApi) {
+                    const columnDefs = gridOptions.columnDefs.map(col => {
+                        // 모바일에서는 hideOnMobile이 true인 컬럼을 숨김
+                        const updatedCol = {...col};
+                        if (col.hideOnMobile) {
+                            updatedCol.hide = isMobile;
+                        }
+                        return updatedCol;
+                    });
+                    
+                    gridApi.setGridOption('columnDefs', columnDefs);
+                    
+                    // 화면에 맞게 컬럼 크기 조정
+                    setTimeout(() => {
+                        gridApi.sizeColumnsToFit();
+                    }, 100);
+                }
+            }
+            
+            // 초기 로드 및 화면 크기 변경 시 조정
+            window.addEventListener('resize', adjustColumnsForScreenSize);
+            adjustColumnsForScreenSize();
         }
+
+        let gridApi;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const { username } = checkAuth();
+            document.getElementById('loggedInUser').textContent = `${username}님`;
+            
+            // 그리드 초기화
+            const gridDiv = document.getElementById('storeGrid');
+            if (window.agGrid && window.agGrid.createGrid) {
+                gridApi = window.agGrid.createGrid(gridDiv, gridOptions);
+                setupResponsiveGrid(); // 반응형 설정 적용
+                loadStores();
+            } else {
+                console.error('AG Grid 라이브러리가 로드되지 않았습니다.');
+                document.getElementById('errorAlert').textContent = '그리드 초기화에 실패했습니다.';
+                document.getElementById('errorAlert').classList.remove('d-none');
+            }
+        });
 
         async function loadStores() {
             try {
@@ -200,12 +241,6 @@
                 }
             }
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const { username } = checkAuth();
-            document.getElementById('loggedInUser').textContent = `${username}님`;
-            loadStores();
-        });
 
         document.getElementById('logoutButton').addEventListener('click', () => {
             localStorage.clear();
