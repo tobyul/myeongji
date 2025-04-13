@@ -145,10 +145,29 @@
             loadStores();
         });
 
-        document.getElementById('logoutButton').addEventListener('click', () => {
-            localStorage.clear();
-            window.location.href = 'login.html';
+        // 로그아웃 처리
+        logoutButton.addEventListener('click', async () => {
+            try {
+                const response = await fetch('https://gw.ecron.co.kr:81/api/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('username');
+                    window.location.href = 'login.html';
+                } else {
+                    throw new Error('로그아웃 실패');
+                }
+            } catch (error) {
+                console.error('로그아웃 오류:', error);
+                errorMessage.textContent = error.message || '로그아웃 중 오류가 발생했습니다.';
+                errorAlert.classList.remove('d-none');
+            }
         });
+
     </script>
 </body>
 </html>
