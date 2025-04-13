@@ -130,13 +130,21 @@
         document.addEventListener('DOMContentLoaded', function() {
             const loginForm = document.getElementById('loginForm');
             const loginError = document.getElementById('loginError');
-            
+
             loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                
+
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                if (!username || !password) {
+                    loginError.textContent = '아이디와 비밀번호를 입력하세요.';
+                    loginError.classList.remove('d-none');
+                    return;
+                }
+
+                console.log('Sending:', { username, password }); // 디버깅
+
                 try {
                     const response = await fetch('https://gw.ecron.co.kr:81/api/auth/login', {
                         method: 'POST',
@@ -144,24 +152,23 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({ username, password }),
-                        credentials: 'include' // 쿠키를 포함하기 위해 필요
+                        credentials: 'include'
                     });
-                    
+
+                    const responseData = await response.json();
+                    console.log('Response:', responseData); // 디버깅
+
                     if (!response.ok) {
-                        throw new Error('로그인 실패');
+                        throw new Error(responseData.error || '로그인 실패');
                     }
-                    
-                    const data = await response.json();
-                    
-                    // 로그인 성공 시, 세션 정보 저장
+
                     localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('username', username);
-                    
-                    // 리다이렉션 (점빵 등록 페이지 또는 관리자 페이지로)
                     window.location.href = 'add-store.html';
-                    
+
                 } catch (error) {
                     console.error('로그인 오류:', error);
+                    loginError.textContent = error.message;
                     loginError.classList.remove('d-none');
                 }
             });
