@@ -156,7 +156,7 @@
                     });
 
                     const responseData = await response.json();
-                    console.log('Response:', responseData); // 디버깅
+                    //console.log('Response:', responseData); // 디버깅
 
                     if (response.ok && responseData.token) {
                         localStorage.setItem('auth_token', responseData.token);
@@ -165,7 +165,7 @@
                     }
 
                 } catch (error) {
-                    console.error('로그인 오류:', error);
+                    //console.error('로그인 오류:', error);
                     loginError.textContent = error.message;
                     loginError.classList.remove('d-none');
                 }
