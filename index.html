@@ -214,6 +214,18 @@
         .card-body a:hover {
             text-decoration: underline;
         }
+
+        .footer-link {
+            color: #4A90E2;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        .footer-link:hover {
+            color: #BFECFF;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -299,7 +311,10 @@
     <!-- Footer 추가 -->
     <footer class="bg-white py-3 mt-4">
         <div class="container text-center">
-            <small class="text-muted">© 2025 삼정더베스트/록커. All Rights Reserved.</small>
+            <small class="text-muted">© 2025 <a href="login.html">삼정더베스트/록커.</a> All Rights Reserved.</small>
+            <div class="mt-2">
+                <a href="login.html" class="footer-link" id="authLink">관리자 로그인</a>
+            </div>
         </div>
     </footer>
 
