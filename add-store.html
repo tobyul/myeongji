@@ -102,6 +102,12 @@
         <button id="logoutButton" class="btn btn-sm btn-outline-secondary">로그아웃</button>
     </div>
 
+    <!-- 점빵 목록 (AG Grid) 추가 -->
+    <div class="container mb-4">
+        <h4 class="page-title">이웃점빵</h4>
+        <div id="storeGrid" class="ag-theme-alpine" style="height: 300px; width: 100%;"></div>
+    </div>
+
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-lg-8">
@@ -181,8 +187,69 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css">
 
     <script>
+        let isEditMode = false;
+        let selectedStoreId = null;
+
+        // ag-Grid 초기화
+        const gridOptions = {
+            columnDefs: [
+                { headerName: '카테고리', field: 'category', sortable: true },
+                { headerName: '점빵명', field: 'name', sortable: true },
+                { headerName: '점주닉네임', field: 'nickname', sortable: true },
+                { headerName: '연락처', field: 'contact' }
+            ],
+            defaultColDef: {
+                resizable: true,
+                flex: 1
+            },
+            rowSelection: 'single',
+            onRowClicked: onStoreSelected
+        };
+
+        const gridDiv = document.getElementById('storeGrid');
+        new agGrid.Grid(gridDiv, gridOptions);
+
+        async function loadStores() {
+            try {
+                const response = await fetch('https://gw.ecron.co.kr:81/api/stores', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    gridOptions.api.setRowData(data.stores); // API에 맞게 수정
+                } else {
+                    throw new Error('점빵 목록 불러오기 실패');
+                }
+            } catch (e) {
+                console.error('AG Grid 데이터 로드 실패:', e);
+            }
+        }
+
+        function onStoreSelected(event) {
+            const store = event.data;
+            selectedStoreId = store.id; // 수정 시 필요
+            isEditMode = true;
+
+            // 폼에 값 채우기
+            document.getElementById('category').value = store.category;
+            document.getElementById('name').value = store.name;
+            document.getElementById('nickname').value = store.nickname;
+            document.getElementById('description').value = store.description || '';
+            document.getElementById('benefit').value = store.benefit || '';
+            document.getElementById('code').value = store.code || '';
+            document.getElementById('contact').value = store.contact || '';
+            document.getElementById('address').value = store.address || '';
+            document.getElementById('site').value = store.site || '';
+        }
+
         document.addEventListener('DOMContentLoaded', async function () {
             const storeForm = document.getElementById('storeForm');
             const successAlert = document.getElementById('successAlert');
@@ -302,7 +369,11 @@
             document.querySelectorAll('.btn-close').forEach(btn => {
                 btn.addEventListener('click', () => btn.closest('.alert').classList.add('d-none'));
             });
+
+
         });
+
+        loadStores();
     </script>
 </body>
 </html>
