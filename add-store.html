@@ -95,48 +95,7 @@
             color: #d9534f;
         }
     </style>
-    <!-- // 헤드 부분에 추가
-    <script>
-        // 페이지 로드 시 인증 확인
-        document.addEventListener('DOMContentLoaded', async function() {
-            try {
-                const response = await fetch('https://gw.ecron.co.kr:81/api/auth/check', {
-                    method: 'GET',
-                    credentials: 'include' // 쿠키 포함
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok || !data.authenticated) {
-                    // 인증되지 않은 경우 로그인 페이지로 리다이렉션
-                    window.location.href = 'login.html?redirect=add-store.html';
-                }
-                
-                // 인증된 경우 사용자 이름 표시 (옵션)
-                if (data.username) {
-                    const welcomeEl = document.createElement('div');
-                    welcomeEl.className = 'text-end mb-4';
-                    welcomeEl.innerHTML = `<p>환영합니다, <strong>${data.username}</strong>님! <a href="#" id="logoutBtn" class="btn btn-sm btn-outline-secondary">로그아웃</a></p>`;
-                    document.querySelector('.page-title').after(welcomeEl);
-                    
-                    // 로그아웃 버튼 이벤트 추가
-                    document.getElementById('logoutBtn').addEventListener('click', async function(e) {
-                        e.preventDefault();
-                        
-                        await fetch('https://gw.ecron.co.kr:81/api/auth/logout', {
-                            method: 'POST',
-                            credentials: 'include'
-                        });
-                        
-                        window.location.href = 'login.html';
-                    });
-                }
-            } catch (error) {
-                console.error('인증 확인 오류:', error);
-                window.location.href = 'login.html';
-            }
-        });
-    </script> -->
+    
 </head>
 <body>
     <a href="index.html" style="text-decoration: none;">
