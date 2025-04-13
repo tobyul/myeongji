@@ -159,8 +159,8 @@
                     console.log('Response:', responseData); // 디버깅
 
                     if (response.ok && responseData.token) {
-                        localStorage.setItem('auth_token', responseData.token);
-                        localStorage.setItem('username', responseData.username || 'unknown');
+                        LocalStorage.setItem('auth_token', responseData.token);
+                        LocalStorage.setItem('username', responseData.username || 'unknown');
                         window.location.href = 'store-list.html';
                     }
 
