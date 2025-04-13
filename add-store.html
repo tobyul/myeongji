@@ -207,11 +207,13 @@
             const errorAlert = document.getElementById('errorAlert');
             const errorMessage = document.getElementById('errorMessage');
 
+            // 인증 상태 확인
             async function checkAuth() {
                 try {
                     const token = localStorage.getItem('auth_token');
                     console.log('Stored token:', token);
                     if (!token) {
+                        console.log('No token found, redirecting to login');
                         errorMessage.textContent = '로그인 상태를 확인할 수 없습니다.';
                         errorAlert.classList.remove('d-none');
                         setTimeout(() => {
@@ -219,6 +221,7 @@
                         }, 3000);
                         return false;
                     }
+
                     const response = await fetch('https://gw.ecron.co.kr:81/api/auth/check', {
                         method: 'GET',
                         headers: {
@@ -229,7 +232,9 @@
                     console.log('Response status:', response.status);
                     const data = await response.json();
                     console.log('Auth check:', data);
+
                     if (!response.ok || !data.authenticated) {
+                        console.log('Authentication failed:', data.message);
                         errorMessage.textContent = data.message || '로그인 상태를 확인할 수 없습니다.';
                         errorAlert.classList.remove('d-none');
                         setTimeout(() => {
@@ -250,9 +255,11 @@
                 }
             }
 
+            // 페이지 로드 시 인증 확인
             const isAuthenticated = await checkAuth();
             if (!isAuthenticated) return;
 
+            // 로그아웃 버튼 추가
             const logoutButton = document.createElement('button');
             logoutButton.className = 'btn btn-outline-secondary me-md-2';
             logoutButton.textContent = '로그아웃';
@@ -266,6 +273,7 @@
                     });
                     const data = await response.json();
                     console.log('Logout response:', data);
+
                     if (response.ok && data.success) {
                         localStorage.removeItem('auth_token');
                         localStorage.removeItem('username');
@@ -280,14 +288,17 @@
                 }
             });
 
+            // 폼 위에 로그아웃 버튼 추가
             const formContainer = document.querySelector('.form-container');
             const buttonContainer = document.createElement('div');
             buttonContainer.className = 'd-grid gap-2 d-md-flex justify-content-md-end mb-3';
             buttonContainer.appendChild(logoutButton);
             formContainer.insertBefore(buttonContainer, storeForm);
 
+            // 폼 제출 로직
             storeForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
+                
                 const formData = {
                     category: document.getElementById('category').value,
                     name: document.getElementById('name').value,
@@ -299,6 +310,7 @@
                     address: document.getElementById('address').value,
                     site: document.getElementById('site').value
                 };
+                
                 try {
                     const token = localStorage.getItem('auth_token');
                     const response = await fetch('https://gw.ecron.co.kr:81/api/stores', {
@@ -309,9 +321,11 @@
                         },
                         body: JSON.stringify(formData)
                     });
+                    
                     if (!response.ok) {
                         throw new Error(`서버 응답 오류: ${response.status}`);
                     }
+                    
                     successAlert.classList.remove('d-none');
                     storeForm.reset();
                 } catch (error) {
@@ -320,7 +334,8 @@
                     errorAlert.classList.remove('d-none');
                 }
             });
-
+            
+            // 알림 닫기 버튼 처리
             document.querySelectorAll('.btn-close').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.alert').classList.add('d-none');
