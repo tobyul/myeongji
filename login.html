@@ -158,13 +158,11 @@
                     const responseData = await response.json();
                     console.log('Response:', responseData); // 디버깅
 
-                    if (!response.ok) {
-                        throw new Error(responseData.error || `로그인 실패: ${response.status}`);
+                    if (response.ok && responseData.token) {
+                        localStorage.setItem('auth_token', responseData.token);
+                        localStorage.setItem('username', responseData.username || 'unknown');
+                        window.location.href = 'add-store.html';
                     }
-
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('username', username);
-                    window.location.href = 'add-store.html';
 
                 } catch (error) {
                     console.error('로그인 오류:', error);
