@@ -155,8 +155,8 @@
                     } else {
                         throw new Error('유효한 점빵 데이터가 없습니다.');
                     }
-                    gridApi.setGridOption('rowData', mappedStores);
-                    console.log('로드된 데이터:', mappedStores); // 디버깅용
+                    gridApi.setGridOption('rowData', stores);
+                    console.log('로드된 데이터:', stores); // 디버깅용
                 } else {
                     throw new Error(`API 오류: ${response.status} ${data.message || ''}`);
                 }
