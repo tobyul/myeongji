@@ -282,10 +282,12 @@
                 
                 const method = isEdit ? 'PUT' : 'POST';
                 
+                console.log(url);
+                console.log(method);
+
                 const response = await fetch(url, {
                     method: method,
                     headers: {
-                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(eventData)
