@@ -265,7 +265,13 @@
             const eventData = {};
             
             for (const [key, value] of formData.entries()) {
-                eventData[key] = value;
+                if (key === 'start_date' || key === 'end_date') {
+                    // ISO 형식으로 날짜 변환
+                    const date = new Date(value);
+                    eventData[key] = date.toISOString().split('T')[0];
+                } else {
+                    eventData[key] = value;
+                }
             }
             
             return eventData;
