@@ -8,54 +8,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="common-style.css">
     <style>
-        .container {
-            max-width: 600px;
-            margin-top: 2rem;
-            background-color: var(--theme-bg-secondary);
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        .logo-container {
+            text-align: center;
+            padding: 20px 0;
         }
-        .form-label {
+        .logo-container img {
+            max-width: 200px;
+            max-height: 180px;
+        }
+        .page-title {
+            color: var(--theme-accent-dark);
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        #userInfoBar {
+            padding: 10px 20px;
+        }
+        #loggedInUser {
             font-weight: 500;
             color: var(--theme-accent-dark);
         }
-        .required::after {
-            content: '*';
-            color: red;
-            margin-left: 4px;
+        .alert {
+            margin-top: 20px;
         }
-        .error-message {
-            color: red;
-            font-size: 0.9rem;
-            display: none;
-            margin-top: 0.5rem;
-        }
-        .spinner-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
-            display: none;
-        }
-        #formTitle {
-            color: var(--theme-accent-dark);
-            font-weight: 600;
-        }
-        
-        /* Form fields for dark theme */
-        [data-theme="dark"] .form-control,
-        [data-theme="dark"] .form-select {
-            background-color: #242842;
-            border-color: #303456;
-            color: var(--theme-text-primary);
-        }
-        
-        [data-theme="dark"] .form-control:focus,
-        [data-theme="dark"] .form-select:focus {
-            background-color: #242842;
-            color: var(--theme-text-primary);
+        .ag-theme-alpine .ag-cell, .ag-theme-alpine-dark .ag-cell {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
     <script src="theme-loader.js"></script>
