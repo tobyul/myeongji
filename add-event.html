@@ -287,9 +287,6 @@
                     : 'https://gw.ecron.co.kr:81/api/events';
                 
                 const method = isEdit ? 'PUT' : 'POST';
-                
-                console.log(url);
-                console.log(method);
 
                 const response = await fetch(url, {
                     method: method,
