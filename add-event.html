@@ -109,16 +109,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 확장 오류 억제
-        const originalConsoleError = console.error;
-        console.error = function (...args) {
-            const message = args[0] || '';
-            if (typeof message === 'string' && message.includes('chrome-extension://')) {
-                return;
-            }
-            originalConsoleError.apply(console, args);
-        };
-
+        
         // 인증 점검
         function checkAuth() {
             const token = localStorage.getItem('auth_token');
