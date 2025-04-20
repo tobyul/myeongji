@@ -10,33 +10,38 @@
     <link rel="stylesheet" href="common-style.css">
     
     <style>
-        .logo-container {
-            text-align: center;
-            padding: 20px 0;
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        .logo-container img {
-            max-width: 200px;
-            max-height: 180px;
+        
+        .login-container {
+            background-color: var(--theme-bg-secondary);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            max-width: 400px;
+            width: 100%;
         }
-        .page-title {
+        
+        .login-title {
             color: var(--theme-accent-dark);
             font-weight: 600;
             margin-bottom: 30px;
+            text-align: center;
         }
-        #userInfoBar {
-            padding: 10px 20px;
+        
+        .form-control:focus {
+            border-color: var(--theme-accent);
+            box-shadow: 0 0 0 0.2rem rgba(191, 236, 255, 0.25);
         }
-        #loggedInUser {
-            font-weight: 500;
-            color: var(--theme-accent-dark);
-        }
-        .alert {
-            margin-top: 20px;
-        }
-        .ag-theme-alpine .ag-cell, .ag-theme-alpine-dark .ag-cell {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
     <script src="theme-loader.js"></script>
