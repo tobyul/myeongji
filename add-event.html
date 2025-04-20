@@ -72,7 +72,7 @@
             
             <div class="mb-3">
                 <label for="eventContent" class="form-label">이벤트 내용 <span class="text-danger">*</span></label>
-                <textarea class="form-control" id="eventContent" name="event_content" rows="4" required></textarea>
+                <textarea class="form-control" id="eventContent" name="event_content" rows="6" required></textarea>
                 <div class="invalid-feedback">이벤트 내용을 입력해주세요.</div>
             </div>
 
@@ -376,7 +376,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const { username } = checkAuth();
             document.getElementById('loggedInUser').textContent = `${username}님`;
-            
+
             await initForm();
             
             // 폼 제출 이벤트 처리
