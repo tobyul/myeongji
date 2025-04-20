@@ -386,6 +386,7 @@ h5.text-secondary {
   color: var(--theme-accent-hover);
 }
 
+
 .nav-link.active {
   color: var(--theme-text-primary) !important;
   background-color: var(--theme-accent) !important;
