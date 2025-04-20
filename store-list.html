@@ -1,67 +1,45 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" data-theme="spring">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>명지국제자유방 이웃점빵 - 점빵 목록</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.0.1/styles/ag-grid.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.0.1/styles/ag-theme-alpine.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.0.1/styles/ag-theme-alpine-dark.css">
+    <link rel="stylesheet" href="common-style.css">
     <style>
-        body {
-            background-color: #FFF6E3;
-            color: #333;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
         .logo-container {
             text-align: center;
             padding: 20px 0;
-            background: linear-gradient(to right, #FFF6E3, #FFFFFF);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         .logo-container img {
             max-width: 200px;
             max-height: 180px;
         }
         .page-title {
-            color: #4A90E2;
+            color: var(--theme-accent-dark);
             font-weight: 600;
             margin-bottom: 30px;
         }
-        .btn-primary {
-            background-color: #BFECFF;
-            border-color: #95D8FF;
-            color: #333;
-            font-weight: 500;
-        }
-        .btn-primary:hover {
-            background-color: #95D8FF;
-            border-color: #7CC4FF;
-        }
         #userInfoBar {
-            background-color: #FFF6E3;
-            border-bottom: 1px solid #FFE0B2;
             padding: 10px 20px;
         }
         #loggedInUser {
             font-weight: 500;
-            color: #4A90E2;
-        }
-        footer {
-            border-top: 1px solid #FFE0B2;
-            background-color: #FFF6E3;
-            padding: 15px 0;
+            color: var(--theme-accent-dark);
         }
         .alert {
             margin-top: 20px;
         }
-        /* 긴 텍스트 열 스타일 */
-        .ag-theme-alpine .ag-cell {
+        .ag-theme-alpine .ag-cell, .ag-theme-alpine-dark .ag-cell {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
     </style>
+    <script src="theme-loader.js"></script>
 </head>
 <body>
     <a href="index.html" style="text-decoration: none;">
@@ -78,7 +56,17 @@
 
     <div class="container py-4">
         <h2 class="page-title">이웃점빵 목록</h2>
-        <div class="mb-3 d-flex justify-content-end">
+        <div class="mb-3 d-flex justify-content-between align-items-center">
+            <div>
+                <label for="themeSelect" class="form-label">테마 선택</label>
+                <select id="themeSelect" class="form-select w-auto d-inline-block">
+                    <option value="spring">봄</option>
+                    <option value="summer">여름</option>
+                    <option value="autumn">가을</option>
+                    <option value="winter">겨울</option>
+                    <option value="dark">다크</option>
+                </select>
+            </div>
             <a href="add-store.html" class="btn btn-primary">신규 등록</a>
         </div>
         <div id="storeGrid" class="ag-theme-alpine" style="height: 500px; width: 100%;"></div>
@@ -100,7 +88,7 @@
         const originalConsoleError = console.error;
         console.error = function (...args) {
             const message = args[0] || '';
-            if (typeof message === 'string' && message.includes('chrome-extension://mfbcdcnpokpoajjciilocoachedjkima')) {
+            if (typeof message === 'string' && message.includes('chrome-extension://')) {
                 return;
             }
             originalConsoleError.apply(console, args);
@@ -138,7 +126,6 @@
             rowSelection: 'single',
             onRowClicked: (event) => {
                 const store = event.data;
-                console.log('선택된 점빵:', store);
                 localStorage.setItem('selectedStore', JSON.stringify({
                     ...store,
                     site: store.site_url || store.site, // add-store.html 호환
@@ -182,23 +169,6 @@
 
         let gridApi;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const { username } = checkAuth();
-            document.getElementById('loggedInUser').textContent = `${username}님`;
-            
-            // 그리드 초기화
-            const gridDiv = document.getElementById('storeGrid');
-            if (window.agGrid && window.agGrid.createGrid) {
-                gridApi = window.agGrid.createGrid(gridDiv, gridOptions);
-                setupResponsiveGrid(); // 반응형 설정 적용
-                loadStores();
-            } else {
-                console.error('AG Grid 라이브러리가 로드되지 않았습니다.');
-                document.getElementById('errorAlert').textContent = '그리드 초기화에 실패했습니다.';
-                document.getElementById('errorAlert').classList.remove('d-none');
-            }
-        });
-
         async function loadStores() {
             try {
                 gridApi.showLoadingOverlay();
@@ -210,7 +180,6 @@
                     }
                 });
                 const data = await response.json();
-                //console.log('API 응답:', data);
                 gridApi.hideOverlay();
                 if (response.ok) {
                     let stores;
@@ -226,7 +195,6 @@
                     } else {
                         gridApi.setGridOption('rowData', stores);
                     }
-                    //console.log('로드된 데이터:', stores);
                 } else {
                     throw new Error(`API 오류: ${response.status} ${data.message || ''}`);
                 }
@@ -242,9 +210,52 @@
             }
         }
 
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { username } = checkAuth();
+            document.getElementById('loggedInUser').textContent = `${username}님`;
+            
+            // 그리드 초기화
+            const gridDiv = document.getElementById('storeGrid');
+            if (window.agGrid && window.agGrid.createGrid) {
+                gridApi = window.agGrid.createGrid(gridDiv, gridOptions);
+                window.gridApi = gridApi; // 테마 변경 시 접근할 수 있도록 전역에 저장
+                setupResponsiveGrid(); // 반응형 설정 적용
+                loadStores();
+            } else {
+                console.error('AG Grid 라이브러리가 로드되지 않았습니다.');
+                document.getElementById('errorAlert').textContent = '그리드 초기화에 실패했습니다.';
+                document.getElementById('errorAlert').classList.remove('d-none');
+            }
+        });
+
         document.getElementById('logoutButton').addEventListener('click', () => {
             localStorage.clear();
             window.location.href = 'login.html';
+        });
+
+        // 테마 선택 이벤트 리스너
+        document.getElementById('themeSelect').addEventListener('change', async function() {
+            const theme = this.value;
+            const success = await window.changeTheme(theme);
+            
+            if (success) {
+                // 성공 메시지 표시
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'alert alert-success mt-2';
+                messageDiv.textContent = '테마가 성공적으로 적용되었습니다.';
+                messageDiv.style.position = 'fixed';
+                messageDiv.style.bottom = '20px';
+                messageDiv.style.right = '20px';
+                messageDiv.style.zIndex = '9999';
+                document.body.appendChild(messageDiv);
+                
+                // 2초 후 메시지 제거
+                setTimeout(() => {
+                    document.body.removeChild(messageDiv);
+                }, 2000);
+            } else {
+                alert('테마 적용에 실패했습니다. 다시 시도해주세요.');
+            }
         });
     </script>
 </body>
