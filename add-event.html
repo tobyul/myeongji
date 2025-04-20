@@ -92,7 +92,6 @@
             <div class="form-buttons d-flex justify-content-between">
                 <button type="button" id="cancelButton" class="btn btn-secondary">취소</button>
                 <div>
-                    <button type="button" id="deleteButton" class="btn btn-danger me-2 d-none">삭제</button>
                     <button type="submit" id="saveButton" class="btn btn-primary">저장</button>
                 </div>
             </div>
@@ -149,7 +148,6 @@
             
             if (mode === 'edit') {
                 document.getElementById('pageTitle').textContent = '이벤트 수정';
-                document.getElementById('deleteButton').classList.remove('d-none');
                 
                 // ID로 이벤트 데이터 가져오기
                 await fetchEventById(id);
@@ -380,18 +378,6 @@
             // 취소 버튼 클릭 이벤트
             document.getElementById('cancelButton').addEventListener('click', () => {
                 window.location.href = 'store-list.html';
-            });
-            
-            // 삭제 버튼 클릭 이벤트
-            document.getElementById('deleteButton').addEventListener('click', async () => {
-                if (confirm('정말로 이 이벤트를 삭제하시겠습니까?')) {
-                    const eventId = document.getElementById('eventId').value;
-                    if (eventId) {
-                        await deleteEvent(eventId);
-                    } else {
-                        showError('삭제할 이벤트 ID를 찾을 수 없습니다.');
-                    }
-                }
             });
         });
     </script>
