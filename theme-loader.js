@@ -14,7 +14,7 @@
             if (!response.ok) throw new Error('테마 로딩 실패');
             
             const data = await response.json();
-            const theme = data.theme || 'spring';
+            const theme = data[0].theme || 'spring';
             
             // 테마 적용 및 캐시 저장
             applyTheme(theme);
