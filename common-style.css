@@ -11,24 +11,22 @@ html {
 }
 
 :root {
-  /* 봄 테마 (기본) */
-  --theme-bg-primary: #FFF6E3;
-  --theme-bg-secondary: #FFFFFF;
-  --theme-accent: #BFECFF;
-  --theme-accent-hover: #95D8FF;
-  --theme-accent-dark: #4A90E2;
-  --theme-border: #FFE0B2;
-  --theme-text-primary: #333333;
-  --theme-text-secondary: #6c757d;
-  --theme-benefit: #CD5C5C;
-  --theme-box-shadow: rgba(0,0,0,0.05);
-  --theme-box-shadow-hover: rgba(0,0,0,0.08);
-  
-  /* 카테고리 색상 - 봄 */
-  --category-food-cafe: #CDC1FF;
-  --category-life-convenience: #BFECFF;
-  --category-health-beauty: #FFCCEA;
-  --category-etc: #C1E8D0;
+  --theme-bg-primary: #ffffff;
+  --theme-bg-secondary: #ffffff;
+  --theme-accent: #dddddd;
+  --theme-accent-hover: #cccccc;
+  --theme-accent-dark: #999999;
+  --theme-border: #eeeeee;
+  --theme-text-primary: #222222;
+  --theme-text-secondary: #666666;
+  --theme-benefit: #d9534f;
+  --theme-box-shadow: rgba(0, 0, 0, 0.03);
+  --theme-box-shadow-hover: rgba(0, 0, 0, 0.06);
+
+  --category-food-cafe: #dddddd;
+  --category-life-convenience: #dddddd;
+  --category-health-beauty: #dddddd;
+  --category-etc: #dddddd;
 }
 
 /* 봄 테마 */
