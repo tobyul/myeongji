@@ -50,6 +50,12 @@
         </div>
     </a>
 
+    <!-- 상단 사용자 정보 바 -->
+    <div id="userInfoBar" class="d-flex justify-content-end align-items-center">
+        <span id="loggedInUser" class="me-3"></span>
+        <button id="logoutButton" class="btn btn-sm btn-outline-secondary">로그아웃</button>
+    </div>
+
     <div class="container py-4">
         <h2 class="page-title" id="pageTitle">이벤트 등록</h2>
         
@@ -369,6 +375,7 @@
         // DOMContentLoaded 이벤트 리스너
         document.addEventListener('DOMContentLoaded', async () => {
             const { username } = checkAuth();
+            document.getElementById('loggedInUser').textContent = `${username}님`;
             
             await initForm();
             
