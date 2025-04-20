@@ -283,26 +283,56 @@
                 const { token } = checkAuth();
                 const isEdit = getUrlParams().mode === 'edit';
                 const url = isEdit 
-                    ? `https://gw.ecron.co.kr:81/api/events/${eventData.event_id}`
-                    : 'https://gw.ecron.co.kr:81/api/events';
+                    ? `${API_BASE_URL}/api/events/${eventData.event_id}`
+                    : `${API_BASE_URL}/api/events`;
                 
                 const method = isEdit ? 'PUT' : 'POST';
                 
-                console.log(url);
-                console.log(method);
-
+                console.log("요청 URL:", url);
+                console.log("요청 메서드:", method);
+                console.log("요청 데이터:", JSON.stringify(eventData, null, 2));
+                
+                // 날짜 형식 보정
+                if (eventData.start_date) {
+                    eventData.start_date = new Date(eventData.start_date).toISOString().split('T')[0];
+                }
+                if (eventData.end_date) {
+                    eventData.end_date = new Date(eventData.end_date).toISOString().split('T')[0];
+                }
+                
+                // fetch 요청 시도
                 const response = await fetch(url, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`  // 토큰 추가
+                        'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify(eventData)
+                    body: JSON.stringify(eventData),
+                    // 타임아웃 설정 (fetch는 기본적으로 타임아웃이 없음)
+                    signal: AbortSignal.timeout(10000) // 10초 타임아웃
                 });
                 
+                // 응답 처리
+                let responseData;
+                const responseText = await response.text();
+                
+                try {
+                    // 응답이 JSON인지 확인
+                    responseData = JSON.parse(responseText);
+                } catch (e) {
+                    console.log("응답이 JSON 형식이 아님:", responseText);
+                    responseData = { message: responseText };
+                }
+                
+                console.log("서버 응답:", responseData);
+                
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || `저장에 실패했습니다. (${response.status})`);
+                    throw new Error(
+                        responseData.message || 
+                        responseData.error || 
+                        responseData.details || 
+                        `저장에 실패했습니다. (${response.status})`
+                    );
                 }
                 
                 showSuccess(isEdit ? '이벤트가 수정되었습니다.' : '이벤트가 등록되었습니다.');
