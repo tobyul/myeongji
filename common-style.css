@@ -1,0 +1,235 @@
+/* common-style.css (제공된 파일 그대로 유지) */
+:root {
+  /* 봄 테마 (기본) */
+  --theme-bg-primary: #FFF6E3;
+  --theme-bg-secondary: #FFFFFF;
+  --theme-accent: #BFECFF;
+  --theme-accent-hover: #95D8FF;
+  --theme-accent-dark: #4A90E2;
+  --theme-border: #FFE0B2;
+  --theme-text-primary: #333333;
+  --theme-text-secondary: #6c757d;
+  
+  /* 카테고리 색상 - 봄 */
+  --category-food-cafe: #CDC1FF;
+  --category-life-convenience: #BFECFF;
+  --category-health-beauty: #FFCCEA;
+  --category-etc: #C1E8D0;
+}
+
+/* 봄 테마 */
+[data-theme="spring"] {
+  --theme-bg-primary: #FFF6E3;
+  --theme-bg-secondary: #FFFFFF;
+  --theme-accent: #BFECFF;
+  --theme-accent-hover: #95D8FF;
+  --theme-accent-dark: #4A90E2;
+  --theme-border: #FFE0B2;
+  --theme-text-primary: #333333;
+  --theme-text-secondary: #6c757d;
+  
+  /* 카테고리 색상 - 봄 */
+  --category-food-cafe: #CDC1FF;
+  --category-life-convenience: #BFECFF;
+  --category-health-beauty: #FFCCEA;
+  --category-etc: #C1E8D0;
+}
+
+/* 여름 테마 */
+[data-theme="summer"] {
+  --theme-bg-primary: #E3F6FF;
+  --theme-bg-secondary: #FFFFFF;
+  --theme-accent: #7DCFFF;
+  --theme-accent-hover: #5BB9F3;
+  --theme-accent-dark: #0077CC;
+  --theme-border: #B2E0FF;
+  --theme-text-primary: #333333;
+  --theme-text-secondary: #6c757d;
+  
+  /* 카테고리 색상 - 여름 */
+  --category-food-cafe: #7DCFFF;
+  --category-life-convenience: #90E0EF;
+  --category-health-beauty: #98F5E1;
+  --category-etc: #CAF0F8;
+}
+
+/* 가을 테마 */
+[data-theme="autumn"] {
+  --theme-bg-primary: #FFF0E5;
+  --theme-bg-secondary: #FFFAF5;
+  --theme-accent: #FFAA80;
+  --theme-accent-hover: #FF8C59;
+  --theme-accent-dark: #E25822;
+  --theme-border: #FFDAC1;
+  --theme-text-primary: #4A3933;
+  --theme-text-secondary: #7D6D63;
+  
+  /* 카테고리 색상 - 가을 */
+  --category-food-cafe: #E6A972;
+  --category-life-convenience: #FFAA80;
+  --category-health-beauty: #E4B7A0;
+  --category-etc: #C7B198;
+}
+
+/* 겨울 테마 */
+[data-theme="winter"] {
+  --theme-bg-primary: #F0F5FF;
+  --theme-bg-secondary: #FFFFFF;
+  --theme-accent: #BDCEFF;
+  --theme-accent-hover: #A5BCFF;
+  --theme-accent-dark: #3D5CBC;
+  --theme-border: #DCE5FF;
+  --theme-text-primary: #2C3E50;
+  --theme-text-secondary: #6c757d;
+  
+  /* 카테고리 색상 - 겨울 */
+  --category-food-cafe: #BDCEFF;
+  --category-life-convenience: #D6E2FF;
+  --category-health-beauty: #D8D8FD;
+  --category-etc: #E5E9F3;
+}
+
+/* 다크 테마 */
+[data-theme="dark"] {
+  --theme-bg-primary: #1A1A2E;
+  --theme-bg-secondary: #16213E;
+  --theme-accent: #0F3460;
+  --theme-accent-hover: #1A4B88;
+  --theme-accent-dark: #4A90E2;
+  --theme-border: #0F3460;
+  --theme-text-primary: #E1E1E1;
+  --theme-text-secondary: #ABABAB;
+  
+  /* 카테고리 색상 - 다크 */
+  --category-food-cafe: #533483;
+  --category-life-convenience: #0F3460;
+  --category-health-beauty: #950740;
+  --category-etc: #1A4D2E;
+}
+
+/* 공통 스타일 - 테마 변수 적용 */
+body {
+  background-color: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
+}
+
+.logo-container {
+  background: linear-gradient(to right, var(--theme-bg-primary), var(--theme-bg-secondary));
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.container, .container-fluid {
+  background-color: var(--theme-bg-secondary);
+}
+
+.card {
+  background-color: var(--theme-bg-secondary);
+  border-color: var(--theme-border);
+}
+
+.card-header {
+  background-color: var(--theme-bg-secondary);
+}
+
+footer {
+  border-top: 1px solid var(--theme-border);
+  background-color: var(--theme-bg-primary);
+}
+
+.btn-primary {
+  background-color: var(--theme-accent);
+  border-color: var(--theme-accent-hover);
+  color: var(--theme-text-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--theme-accent-hover);
+  border-color: var(--theme-accent-hover);
+  color: var(--theme-text-primary);
+}
+
+.btn-outline-secondary, .btn-outline-secondary.active {
+  color: var(--theme-accent-dark) !important;
+  border-color: var(--theme-accent) !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--theme-accent) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+.page-item.active .page-link {
+  background-color: var(--theme-accent) !important;
+  border-color: var(--theme-accent-hover) !important;
+}
+
+.page-link {
+  color: var(--theme-accent-dark) !important;
+}
+
+.nav-link {
+  color: var(--theme-accent-dark);
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: var(--theme-accent-hover);
+}
+
+.nav-link.active {
+  color: var(--theme-text-primary) !important;
+  background-color: var(--theme-accent) !important;
+}
+
+/* 카테고리별 색상 적용 */
+.card-header.category-food-cafe {
+  border-left-color: var(--category-food-cafe);
+}
+
+.card-header.category-life-convenience {
+  border-left-color: var(--category-life-convenience);
+}
+
+.card-header.category-health-beauty {
+  border-left-color: var(--category-health-beauty);
+}
+
+.card-header.category-etc {
+  border-left-color: var(--category-etc);
+}
+
+/* 카테고리 배지 색상 */
+.badge.bg-danger {
+  background-color: var(--category-food-cafe) !important;
+}
+
+.badge.bg-primary {
+  background-color: var(--category-life-convenience) !important;
+}
+
+.badge.bg-info {
+  background-color: var(--category-health-beauty) !important;
+}
+
+.badge.bg-success {
+  background-color: var(--category-etc) !important;
+}
+
+/* 다크 테마일 때 특수 처리 */
+[data-theme="dark"] .table {
+  color: var(--theme-text-primary);
+}
+
+[data-theme="dark"] .form-control {
+  background-color: #242842;
+  border-color: #303456;
+  color: var(--theme-text-primary);
+}
+
+[data-theme="dark"] .form-control:focus {
+  background-color: #242842;
+  color: var(--theme-text-primary);
+}
+
+[data-theme="dark"] .text-muted {
+  color: #ABABAB !important;
+}
