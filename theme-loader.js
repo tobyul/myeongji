@@ -16,7 +16,7 @@
             const data = await response.json();
             const theme = data[0].theme || 'spring';
 
-            consle.log(theme);
+            console.log(theme);
             
             // 테마 적용 및 캐시 저장
             applyTheme(theme);
