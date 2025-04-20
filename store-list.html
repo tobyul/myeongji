@@ -150,13 +150,13 @@
         // 이벤트 그리드 초기화
         const eventGridOptions = {
             columnDefs: [
-                { headerName: 'ID', field: 'event_id', sortable: true, width: 80, minWidth: 60, suppressSizeToFit: false },
-                { headerName: '점빵ID', field: 'store_id', sortable: true, width: 80, minWidth: 60, suppressSizeToFit: false },
+                { headerName: 'ID', field: 'event_id', sortable: true, width: 60, minWidth: 40, suppressSizeToFit: false },
+                { headerName: '점빵ID', field: 'store_id', sortable: true, width: 60, minWidth: 40, suppressSizeToFit: false },
                 { headerName: '점빵명', field: 'store_name', sortable: true, width: 150, minWidth: 120, suppressSizeToFit: false },
                 { headerName: '이벤트내용', field: 'event_content', sortable: true, width: 200, minWidth: 150, suppressSizeToFit: false, tooltipField: 'event_content' },
-                { headerName: '시작일', field: 'start_date', sortable: true, width: 120, hideOnMobile: false },
-                { headerName: '종료일', field: 'end_date', sortable: true, width: 120, hideOnMobile: false },
-                { headerName: '등록일', field: 'created_at', sortable: true, width: 150, hideOnMobile: true }
+                { headerName: '시작일', field: 'start_date', sortable: true, width: 100, hideOnMobile: false },
+                { headerName: '종료일', field: 'end_date', sortable: true, width: 100, hideOnMobile: false },
+                { headerName: '등록일', field: 'created_at', sortable: true, width: 120, hideOnMobile: true }
             ],
             defaultColDef: {
                 resizable: true,
