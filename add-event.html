@@ -369,7 +369,6 @@
         // DOMContentLoaded 이벤트 리스너
         document.addEventListener('DOMContentLoaded', async () => {
             const { username } = checkAuth();
-            document.getElementById('loggedInUser').textContent = `${username}님`;
             
             await initForm();
             
