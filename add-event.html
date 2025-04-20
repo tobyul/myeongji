@@ -144,6 +144,9 @@
         async function initForm() {
             const { mode, id } = getUrlParams();
             
+            // 점빵 목록 먼저 로드
+            await loadStoreList();
+            
             if (mode === 'edit') {
                 document.getElementById('pageTitle').textContent = '이벤트 수정';
                 document.getElementById('deleteButton').classList.remove('d-none');
@@ -169,9 +172,6 @@
                 document.getElementById('startDate').value = today;
                 document.getElementById('endDate').value = today;
             }
-            
-            // 점빵 목록 로드
-            await loadStoreList();
         }
 
         // 점빵 목록 로드
