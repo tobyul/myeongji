@@ -1,4 +1,15 @@
 /* common-style.css 개선 버전 */
+
+/* 페이지가 로드되기 전에 화면을 숨김 */
+html {
+  visibility: hidden;
+}
+
+/* data-theme이 설정되면 화면이 보이도록 설정 */
+[data-theme] {
+  visibility: visible;
+}
+
 :root {
   /* 봄 테마 (기본) */
   --theme-bg-primary: #FFF6E3;
