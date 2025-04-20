@@ -4,10 +4,10 @@
     async function loadAndApplyTheme() {
         try {
             // 로컬 캐시 확인 (선택 사항)
-            const cachedTheme = sessionStorage.getItem('current_theme');
-            if (cachedTheme) {
-                applyTheme(cachedTheme);
-            }
+            // const cachedTheme = sessionStorage.getItem('current_theme');
+            // if (cachedTheme) {
+            //     applyTheme(cachedTheme);
+            // }
             
             // 서버에서 최신 테마 가져오기
             const response = await fetch('https://gw.ecron.co.kr:81/api/theme');
@@ -55,7 +55,7 @@
     window.changeTheme = async function(theme) {
         // 즉시 테마 적용
         applyTheme(theme);
-        sessionStorage.setItem('current_theme', theme);
+        //sessionStorage.setItem('current_theme', theme);
         
         // 서버에 테마 저장
         try {
