@@ -14,10 +14,9 @@
     <!-- 카카오맵 API -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=67015c72ec5b9ba4909f201cc8aa8601&libraries=services"></script>
     <style>
-        /* 기존 인라인 스타일 유지하되 CSS 변수로 교체 */
         body {
-            background-color: var(--theme-bg-primary);
-            color: var(--theme-text-primary);
+            background-color: #FFF6E3; /* 크림색 배경 */
+            color: #333;
             font-family: 'Noto Sans KR', sans-serif;
         }
         
@@ -26,33 +25,50 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px;
-            background: var(--theme-bg-secondary);
+            background: white;
             border-left: 5px solid transparent;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
         
+        .card-header.category-food-cafe {
+            border-left-color: #CDC1FF;  /* 라벤더 */
+        }
+        
+        .card-header.category-life-convenience {
+            border-left-color: #BFECFF;  /* 하늘색 */
+        }
+        
+        .card-header.category-health-beauty {
+            border-left-color: #FFCCEA;  /* 연분홍 */
+        }
+        
+        .card-header.category-etc {
+            border-left-color: #C1E8D0;  /* 민트색 */
+        }
+        
         .card-header .card-title {
-            color: var(--theme-text-primary);
+            color: #333;
             margin-bottom: 0;
         }
         
         .card-header small {
-            color: var(--theme-text-secondary);
+            color: #6c757d;
         }
         
         .benefit {
-            color: #CD5C5C;
+            color: #CD5C5C; /* 좀 더 눈에 띄는 연한 빨강 */
             font-weight: 500;
         }
         
+        /* 카드 호버 효과 향상 */
         .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-radius: 10px;
             overflow: hidden;
             border: none;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            background-color: var(--theme-bg-secondary);
+            background-color: #FFFFFF;
         }
         
         .card:hover {
@@ -63,7 +79,7 @@
         .logo-container {
             text-align: center;
             padding: 20px 0;
-            background: linear-gradient(to right, var(--theme-bg-primary), var(--theme-bg-secondary));
+            background: linear-gradient(to right, #FFF6E3, #FFFFFF); /* 그라데이션 배경 추가 */
             margin-bottom: 1px;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
@@ -74,7 +90,7 @@
         }
 
         .visitor-stats .card {
-            background-color: var(--theme-bg-secondary);
+            background-color: white;
             border: none;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border-radius: 12px;
@@ -85,82 +101,99 @@
         }
 
         .visitor-stats h5 {
-            color: var(--theme-text-primary);
+            color: #444;
             font-weight: 600;
         }
 
         footer {
-            border-top: 1px solid var(--theme-border);
+            border-top: 1px solid #FFE0B2; /* 봄 색상 테두리 */
             position: relative;
             margin-top: auto;
             width: 100%;
-            background-color: var(--theme-bg-primary);
+            background-color: #FFF6E3; /* 부드러운 크림색 */
         }
         
-        /* 버튼 스타일 */
+        /* 봄 테마 버튼 스타일 */
         .btn-secondary, .btn-outline-secondary.active {
-            background-color: var(--theme-accent) !important;
-            border-color: var(--theme-accent-hover) !important;
-            color: var(--theme-text-primary) !important;
+            background-color: #BFECFF !important;
+            border-color: #95D8FF !important;
+            color: #333 !important;
             font-weight: 500;
         }
         
         .btn-outline-secondary {
-            color: var(--theme-accent-dark) !important;
-            border-color: var(--theme-accent) !important;
+            color: #4A90E2 !important;
+            border-color: #BFECFF !important;
         }
         
         .btn-outline-secondary:hover {
-            background-color: var(--theme-accent) !important;
-            color: var(--theme-text-primary) !important;
+            background-color: #E5F6FF !important;
+            color: #4A90E2 !important;
         }
         
         /* 페이지네이션 색상 업데이트 */
         .page-item.active .page-link {
-            background-color: var(--theme-accent) !important;
-            border-color: var(--theme-accent-hover) !important;
+            background-color: #BFECFF !important;
+            border-color: #95D8FF !important;
+            color: #333 !important;
         }
         
         .page-link {
-            color: var(--theme-accent-dark) !important;
+            color: #4A90E2 !important;
         }
         
         /* 최근 등록된 업체 카드 강화 */
         #recentStoresContainer .card {
             border-radius: 12px;
-            border: 1px solid var(--theme-border);
+            border: 1px solid #FFE0B2;
             overflow: hidden;
+        }
+        
+        /* 봄 테마의 뱃지 색상 */
+        .badge.bg-danger {
+            background-color: #CDC1FF !important; /* 라벤더(음식/카페) */
+        }
+        
+        .badge.bg-primary {
+            background-color: #BFECFF !important; /* 하늘색(생활/편의) */
+        }
+        
+        .badge.bg-info {
+            background-color: #FFCCEA !important; /* 연분홍(건강/뷰티) */
+        }
+        
+        .badge.bg-success {
+            background-color: #C1E8D0 !important; /* 민트색(기타) */
         }
         
         /* 검색 입력 폼 개선 */
         #searchInput {
-            border-color: var(--theme-border);
+            border-color: #FFE0B2;
             box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-            background-color: var(--theme-bg-secondary);
-            color: var(--theme-text-primary);
+            background-color: #FFFFFF;
         }
         
         #searchInput:focus {
-            border-color: var(--theme-accent);
+            border-color: #BFECFF;
             box-shadow: 0 0 0 0.2rem rgba(191, 236, 255, 0.25);
         }
         
         /* 신규 점빵 섹션 헤더 개선 */
         h5.text-secondary {
-            color: var(--theme-accent-dark) !important;
+            color: #4A90E2 !important;
             font-weight: 600;
         }
         
         /* 자세히 보기 버튼 개선 */
         .btn-outline-secondary.view-details {
-            color: var(--theme-accent-dark) !important;
-            border-color: var(--theme-accent) !important;
+            color: #4A90E2 !important;
+            border-color: #BFECFF !important;
             border-radius: 20px;
             padding: 0.25rem 0.75rem;
         }
         
         .btn-outline-secondary.view-details:hover {
-            background-color: var(--theme-accent) !important;
+            background-color: #E5F6FF !important;
         }
         
         /* 카드 내부 폰트 사이즈 및 간격 개선 */
@@ -177,7 +210,7 @@
         
         /* 카드 내부 링크 스타일 */
         .card-body a {
-            color: var(--theme-accent-dark);
+            color: #4A90E2;
             text-decoration: none;
         }
         
@@ -186,31 +219,15 @@
         }
 
         .footer-link {
-            color: var(--theme-accent-dark);
+            color: #4A90E2;
             text-decoration: none;
             font-size: 0.9rem;
             font-family: 'Noto Sans KR', sans-serif;
         }
 
         .footer-link:hover {
-            color: var(--theme-accent);
+            color: #BFECFF;
             text-decoration: underline;
-        }
-        
-        /* 다크 테마 특수 처리 */
-        [data-theme="dark"] .form-control {
-            background-color: #242842;
-            border-color: #303456;
-            color: var(--theme-text-primary);
-        }
-
-        [data-theme="dark"] .form-control:focus {
-            background-color: #242842;
-            color: var(--theme-text-primary);
-        }
-        
-        [data-theme="dark"] .text-muted {
-            color: #ABABAB !important;
         }
     </style>
     
