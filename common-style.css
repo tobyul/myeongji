@@ -1,4 +1,4 @@
-/* common-style.css (제공된 파일 그대로 유지) */
+/* common-style.css 개선 버전 */
 :root {
   /* 봄 테마 (기본) */
   --theme-bg-primary: #FFF6E3;
@@ -9,6 +9,9 @@
   --theme-border: #FFE0B2;
   --theme-text-primary: #333333;
   --theme-text-secondary: #6c757d;
+  --theme-benefit: #CD5C5C;
+  --theme-box-shadow: rgba(0,0,0,0.05);
+  --theme-box-shadow-hover: rgba(0,0,0,0.08);
   
   /* 카테고리 색상 - 봄 */
   --category-food-cafe: #CDC1FF;
@@ -27,6 +30,9 @@
   --theme-border: #FFE0B2;
   --theme-text-primary: #333333;
   --theme-text-secondary: #6c757d;
+  --theme-benefit: #CD5C5C;
+  --theme-box-shadow: rgba(0,0,0,0.05);
+  --theme-box-shadow-hover: rgba(0,0,0,0.08);
   
   /* 카테고리 색상 - 봄 */
   --category-food-cafe: #CDC1FF;
@@ -45,6 +51,9 @@
   --theme-border: #B2E0FF;
   --theme-text-primary: #333333;
   --theme-text-secondary: #6c757d;
+  --theme-benefit: #FF6B6B;
+  --theme-box-shadow: rgba(0,122,204,0.05);
+  --theme-box-shadow-hover: rgba(0,122,204,0.08);
   
   /* 카테고리 색상 - 여름 */
   --category-food-cafe: #7DCFFF;
@@ -63,6 +72,9 @@
   --theme-border: #FFDAC1;
   --theme-text-primary: #4A3933;
   --theme-text-secondary: #7D6D63;
+  --theme-benefit: #CC5500;
+  --theme-box-shadow: rgba(226,88,34,0.05);
+  --theme-box-shadow-hover: rgba(226,88,34,0.08);
   
   /* 카테고리 색상 - 가을 */
   --category-food-cafe: #E6A972;
@@ -81,6 +93,9 @@
   --theme-border: #DCE5FF;
   --theme-text-primary: #2C3E50;
   --theme-text-secondary: #6c757d;
+  --theme-benefit: #5C7ACD;
+  --theme-box-shadow: rgba(61,92,188,0.05);
+  --theme-box-shadow-hover: rgba(61,92,188,0.08);
   
   /* 카테고리 색상 - 겨울 */
   --category-food-cafe: #BDCEFF;
@@ -99,6 +114,9 @@
   --theme-border: #0F3460;
   --theme-text-primary: #E1E1E1;
   --theme-text-secondary: #ABABAB;
+  --theme-benefit: #FF6B6B;
+  --theme-box-shadow: rgba(0,0,0,0.2);
+  --theme-box-shadow-hover: rgba(0,0,0,0.25);
   
   /* 카테고리 색상 - 다크 */
   --category-food-cafe: #533483;
@@ -107,80 +125,51 @@
   --category-etc: #1A4D2E;
 }
 
-/* 공통 스타일 - 테마 변수 적용 */
+/* 공통 스타일 - 기본 요소 */
 body {
   background-color: var(--theme-bg-primary);
   color: var(--theme-text-primary);
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
-.logo-container {
-  background: linear-gradient(to right, var(--theme-bg-primary), var(--theme-bg-secondary));
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-}
-
-.container, .container-fluid {
-  background-color: var(--theme-bg-secondary);
-}
-
+/* 카드 스타일 */
 .card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 2px 8px var(--theme-box-shadow);
   background-color: var(--theme-bg-secondary);
-  border-color: var(--theme-border);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px var(--theme-box-shadow-hover);
 }
 
 .card-header {
-  background-color: var(--theme-bg-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: var(--theme-bg-secondary);
+  border-left: 5px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-footer {
-  border-top: 1px solid var(--theme-border);
-  background-color: var(--theme-bg-primary);
-}
-
-.btn-primary {
-  background-color: var(--theme-accent);
-  border-color: var(--theme-accent-hover);
+.card-header .card-title {
   color: var(--theme-text-primary);
+  margin-bottom: 0;
+  font-size: 18px;
+  font-weight: 600;
 }
 
-.btn-primary:hover {
-  background-color: var(--theme-accent-hover);
-  border-color: var(--theme-accent-hover);
-  color: var(--theme-text-primary);
+.card-header small {
+  color: var(--theme-text-secondary);
 }
 
-.btn-outline-secondary, .btn-outline-secondary.active {
-  color: var(--theme-accent-dark) !important;
-  border-color: var(--theme-accent) !important;
-}
-
-.btn-outline-secondary:hover {
-  background-color: var(--theme-accent) !important;
-  color: var(--theme-text-primary) !important;
-}
-
-.page-item.active .page-link {
-  background-color: var(--theme-accent) !important;
-  border-color: var(--theme-accent-hover) !important;
-}
-
-.page-link {
-  color: var(--theme-accent-dark) !important;
-}
-
-.nav-link {
-  color: var(--theme-accent-dark);
-}
-
-.nav-link:hover, .nav-link:focus {
-  color: var(--theme-accent-hover);
-}
-
-.nav-link.active {
-  color: var(--theme-text-primary) !important;
-  background-color: var(--theme-accent) !important;
-}
-
-/* 카테고리별 색상 적용 */
+/* 카테고리별 테두리 색상 */
 .card-header.category-food-cafe {
   border-left-color: var(--category-food-cafe);
 }
@@ -197,7 +186,122 @@ footer {
   border-left-color: var(--category-etc);
 }
 
-/* 카테고리 배지 색상 */
+/* 카드 내부 스타일 */
+.card-body p.card-text {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+  font-size: 14px;
+  color: var(--theme-text-primary);
+}
+
+.card-body a {
+  color: var(--theme-accent-dark);
+  text-decoration: none;
+}
+
+.card-body a:hover {
+  text-decoration: underline;
+}
+
+/* 버튼 스타일 */
+.btn-secondary, .btn-outline-secondary.active {
+  background-color: var(--theme-accent) !important;
+  border-color: var(--theme-accent-hover) !important;
+  color: var(--theme-text-primary) !important;
+  font-weight: 500;
+}
+
+.btn-outline-secondary {
+  color: var(--theme-accent-dark) !important;
+  border-color: var(--theme-accent) !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--theme-accent) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+/* 자세히 보기 버튼 */
+.btn-outline-secondary.view-details {
+  color: var(--theme-accent-dark) !important;
+  border-color: var(--theme-accent) !important;
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+}
+
+.btn-outline-secondary.view-details:hover {
+  background-color: var(--theme-accent) !important;
+}
+
+/* 페이지네이션 */
+.page-item.active .page-link {
+  background-color: var(--theme-accent) !important;
+  border-color: var(--theme-accent-hover) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+.page-link {
+  color: var(--theme-accent-dark) !important;
+}
+
+/* 로고 영역 */
+.logo-container {
+  text-align: center;
+  padding: 20px 0;
+  background: linear-gradient(to right, var(--theme-bg-primary), var(--theme-bg-secondary));
+  margin-bottom: 1px;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.logo-container img {
+  max-width: 200px;
+  max-height: 180px;
+}
+
+/* 방문자 통계 카드 */
+.visitor-stats .card {
+  background-color: var(--theme-bg-secondary);
+  border: none;
+  box-shadow: 0 2px 8px var(--theme-box-shadow);
+  border-radius: 12px;
+}
+
+.visitor-stats .card-body {
+  padding: 1.5rem;
+}
+
+.visitor-stats h5 {
+  color: var(--theme-text-primary);
+  font-weight: 600;
+}
+
+/* 푸터 스타일 */
+footer {
+  border-top: 1px solid var(--theme-border);
+  position: relative;
+  margin-top: auto;
+  width: 100%;
+  background-color: var(--theme-bg-primary);
+}
+
+.footer-link {
+  color: var(--theme-accent-dark);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.footer-link:hover {
+  color: var(--theme-accent);
+  text-decoration: underline;
+}
+
+/* 혜택 강조 */
+.benefit {
+  color: var(--theme-benefit);
+  font-weight: 500;
+}
+
+/* 배지 색상 */
 .badge.bg-danger {
   background-color: var(--category-food-cafe) !important;
 }
@@ -214,7 +318,37 @@ footer {
   background-color: var(--category-etc) !important;
 }
 
-/* 다크 테마일 때 특수 처리 */
+/* 최근 등록된 업체 카드 */
+#recentStoresContainer .card {
+  border-radius: 12px;
+  border: 1px solid var(--theme-border);
+  overflow: hidden;
+}
+
+/* 섹션 헤더 스타일 */
+h5.text-secondary {
+  color: var(--theme-accent-dark) !important;
+  font-weight: 600;
+}
+
+/* 검색 입력 폼 */
+#searchInput {
+  border-color: var(--theme-border);
+  box-shadow: inset 0 1px 2px var(--theme-box-shadow);
+  background-color: var(--theme-bg-secondary);
+  color: var(--theme-text-primary);
+}
+
+#searchInput:focus {
+  border-color: var(--theme-accent);
+  box-shadow: 0 0 0 0.2rem rgba(var(--theme-accent-rgb), 0.25);
+}
+
+/* 다크 테마 특수 처리 */
+[data-theme="dark"] .card {
+  background-color: var(--theme-bg-secondary);
+}
+
 [data-theme="dark"] .table {
   color: var(--theme-text-primary);
 }
@@ -231,5 +365,19 @@ footer {
 }
 
 [data-theme="dark"] .text-muted {
-  color: #ABABAB !important;
+  color: var(--theme-text-secondary) !important;
+}
+
+/* 네비게이션 링크 */
+.nav-link {
+  color: var(--theme-accent-dark);
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: var(--theme-accent-hover);
+}
+
+.nav-link.active {
+  color: var(--theme-text-primary) !important;
+  background-color: var(--theme-accent) !important;
 }
