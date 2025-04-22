@@ -106,6 +106,12 @@
                 <label for="site_url" class="form-label">웹사이트</label>
                 <input type="url" class="form-control" id="site_url" name="site_url">
             </div>
+            <label for="isUsed" class="form-label required">사용유무</label>
+                <select class="form-select" id="isUsed" name="isUsed" required>
+                    <option value="">선택하세요</option>
+                    <option value="Y">Y</option>
+                    <option value="N">N</option>
+                </select>
             <div class="error-message" id="errorMessage"></div>
             <div class="d-flex justify-content-between mt-4">
                 <button type="button" class="btn btn-secondary" onclick="cancel()">취소</button>
@@ -202,6 +208,7 @@
                 document.getElementById('contact').value = data.contact || '';
                 document.getElementById('address').value = data.address || '';
                 document.getElementById('site_url').value = data.site_url || '';
+                document.getElementById('isUsed').value = data.isUsed || '';
             } catch (error) {
                 showError('데이터를 불러오지 못했습니다.');
                 console.error('데이터 로드 오류:', error);
@@ -228,7 +235,8 @@
                 code: document.getElementById('code').value.trim(),
                 contact: document.getElementById('contact').value.trim(),
                 address: document.getElementById('address').value.trim(),
-                site_url: document.getElementById('site_url').value.trim()
+                site_url: document.getElementById('site_url').value.trim(),
+                isUsed: document.getElementById('isUsed').value.trim()
             };
 
             try {
