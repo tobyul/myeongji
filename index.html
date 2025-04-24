@@ -11,7 +11,7 @@
     <!-- 카카오맵 API -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=67015c72ec5b9ba4909f201cc8aa8601&libraries=services"></script>
 
-    <link rel="stylesheet" href="common-style.css?ver=1.0">
+    <link rel="stylesheet" href="common-style.css?ver=1.1">
 
     <script src="theme-loader.js" defer></script>
 </head>
@@ -214,8 +214,8 @@
             const card = document.createElement('div');
             card.className = 'col-12 col-md-4';
             
-            // 카테고리에 따른 배지 색상 설정
-            let badgeClass = 'bg-warning'; // 이벤트용 기본 배지 색상
+            // 배지 색상 설정
+            let badgeClass = 'bg-warning';
             
             const cardContent = `
                 <div class="card h-100 border-0 shadow-sm">
@@ -225,20 +225,24 @@
                             <h5 class="card-title mb-0">${store.name}</h5>
                         </div>
                         <h6 class="text-muted">${store.nickname}</h6>
-                        ${store.description ? 
-                            `<p class="card-text small text-truncate">${store.description}</p>` 
-                            : ''}
+                        
                         ${store.event_content ? 
                             `<div class="alert alert-warning p-2 my-2">
-                                <strong>🎉 이벤트: </strong>${store.event_content}
+                                <strong>🎉 이벤트: </strong>
+                                <div class="event-content-box">${store.event_content}</div>
                                 <div class="small mt-1 text-muted">
                                     ${new Date(store.start_date).toLocaleDateString()} ~ ${new Date(store.end_date).toLocaleDateString()}
                                 </div>
                             </div>` 
                             : ''}
+                        
+                        ${store.description ? 
+                            `<p class="card-text small">${store.description}</p>` 
+                            : ''}
                         ${store.benefit ? 
                             `<p class="card-text small"><span class="text-danger">혜택: ${store.benefit}</span></p>` 
                             : ''}
+                        
                         <div class="text-end mt-2">
                             <button class="btn btn-sm btn-outline-secondary view-details" 
                                data-store-id="${store._id}">자세히 보기</button>
@@ -251,7 +255,6 @@
             `;
             
             card.innerHTML = cardContent;
-            
             return card;
         }
 
