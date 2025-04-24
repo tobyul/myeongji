@@ -228,7 +228,7 @@
                         
                         ${store.event_content ? 
                             `<div class="alert alert-warning p-2 my-2">
-                                <strong>🎉 이벤트: </strong>
+                                <strong>🎉 이벤트 </strong>
                                 <div class="event-content-box" style="white-space: pre-wrap;">${store.event_content}</div>
                                 <div class="small mt-1 text-muted">
                                     ${new Date(store.start_date).toLocaleDateString()} ~ ${new Date(store.end_date).toLocaleDateString()}
@@ -284,10 +284,10 @@
                         </div>
                         <h6 class="text-muted">${store.nickname}</h6>
                         ${store.description ? 
-                            `<p class="card-text small text-truncate">${store.description}</p>` 
+                            `<p class="card-text small" style="white-space: pre-wrap;">${store.description}</p>` 
                             : ''}
                         ${store.benefit ? 
-                            `<p class="card-text small"><span class="text-danger">혜택: ${store.benefit}</span></p>` 
+                            `<p class="card-text small" style="white-space: pre-wrap;"><span class="text-danger">혜택: ${store.benefit}</span></p>` 
                             : ''}
                         <div class="text-end mt-2">
                             <button class="btn btn-sm btn-outline-secondary view-details" 
