@@ -229,16 +229,13 @@
                         ${store.event_content ? 
                             `<div class="alert alert-warning p-2 my-2">
                                 <strong>🎉 이벤트: </strong>
-                                <div class="event-content-box">${store.event_content}</div>
+                                <div class="event-content-box" style="white-space: pre-wrap;">${store.event_content}</div>
                                 <div class="small mt-1 text-muted">
                                     ${new Date(store.start_date).toLocaleDateString()} ~ ${new Date(store.end_date).toLocaleDateString()}
                                 </div>
                             </div>` 
                             : ''}
                         
-                        ${store.description ? 
-                            `<p class="card-text small">${store.description}</p>` 
-                            : ''}
                         ${store.benefit ? 
                             `<p class="card-text small"><span class="text-danger">혜택: ${store.benefit}</span></p>` 
                             : ''}
