@@ -212,6 +212,20 @@ body {
   text-decoration: underline;
 }
 
+.event-content-box {
+    max-height: none;
+    overflow: visible;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.4;
+    margin: 8px 0;
+}
+
+.alert-warning {
+    height: auto;
+    min-height: 80px;
+}
+
 /* 버튼 스타일 */
 .btn-secondary, .btn-outline-secondary.active {
   background-color: var(--theme-accent) !important;
