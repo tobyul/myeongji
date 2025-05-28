@@ -27,6 +27,7 @@ html {
   --category-life-convenience: #dddddd;
   --category-health-beauty: #dddddd;
   --category-etc: #dddddd;
+  --logo-filter: none;
 }
 
 /* 봄 테마 */
@@ -126,6 +127,7 @@ html {
   --theme-benefit: #F7768E;
   --theme-box-shadow: rgba(0,0,0,0.2);
   --theme-box-shadow-hover: rgba(0,0,0,0.25);
+  --logo-filter: brightness(0) invert(1);
   
   /* 카테고리 색상 - 다크 */
   --category-food-cafe: #BB9AF7;
@@ -279,6 +281,7 @@ body {
 .logo-container img {
   max-width: 200px;
   max-height: 180px;
+  filter: var(--logo-filter);
 }
 
 /* 방문자 통계 카드 */
@@ -438,4 +441,13 @@ h5.text-secondary {
 [data-theme="dark"] .badge {
   background-color: var(--theme-accent) !important;
   color: var(--theme-bg-primary) !important;
+}
+
+/* 다크모드에서 로고 컨테이너 추가 스타일 */
+[data-theme="dark"] .logo-container {
+  background: linear-gradient(to right, 
+    rgba(30, 30, 46, 0.95), 
+    rgba(40, 40, 56, 0.95)
+  );
+  border-bottom: 1px solid var(--theme-border);
 }
