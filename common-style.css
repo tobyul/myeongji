@@ -355,23 +355,43 @@ footer {
   background-color: var(--theme-bg-secondary);
 }
 
-[data-theme="dark"] #recentStoresContainer .card-title,
-[data-theme="dark"] #recentStoresContainer .card-text,
-[data-theme="dark"] #recentStoresContainer .text-muted {
-  color: var(--theme-text-primary) !important;
+[data-theme="dark"] #recentStoresContainer .card-title {
+  color: #333333 !important;
 }
 
-[data-theme="dark"] #recentStoresContainer .badge {
-  background-color: var(--theme-accent) !important;
-  color: var(--theme-bg-primary) !important;
+[data-theme="dark"] #recentStoresContainer .card-text {
+  color: #333333 !important;
+}
+
+[data-theme="dark"] #recentStoresContainer h6.text-muted {
+  color: #666666 !important;
+}
+
+[data-theme="dark"] #recentStoresContainer .small {
+  color: #666666 !important;
 }
 
 [data-theme="dark"] #recentStoresContainer .text-danger {
-  color: var(--theme-benefit) !important;
+  color: #FF4444 !important;
+  font-weight: 500;
 }
 
-[data-theme="dark"] #recentStoresContainer small {
-  color: var(--theme-text-secondary) !important;
+/* 행사점빵 스타일과 동일하게 적용 */
+[data-theme="dark"] #eventsStoresContainer .card-title,
+[data-theme="dark"] #recentStoresContainer .card-title {
+  color: #333333 !important;
+  font-weight: 600;
+}
+
+[data-theme="dark"] #eventsStoresContainer .text-muted,
+[data-theme="dark"] #recentStoresContainer .text-muted {
+  color: #666666 !important;
+}
+
+[data-theme="dark"] #eventsStoresContainer .card,
+[data-theme="dark"] #recentStoresContainer .card {
+  background-color: #F5F5F5;
+  border: 1px solid #E0E0E0;
 }
 
 /* 섹션 헤더 스타일 */
