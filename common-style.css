@@ -116,24 +116,24 @@ html {
 
 /* 다크 테마 */
 [data-theme="dark"] {
-  --theme-bg-primary: #1E1E2E;
-  --theme-bg-secondary: #282838;
-  --theme-accent: #7AA2F7;
-  --theme-accent-hover: #89B4FF;
-  --theme-accent-dark: #9CCFD8;
-  --theme-border: #3D3D4D;
-  --theme-text-primary: #CDD6F4;
-  --theme-text-secondary: #A6ADC8;
-  --theme-benefit: #F7768E;
-  --theme-box-shadow: rgba(0,0,0,0.2);
-  --theme-box-shadow-hover: rgba(0,0,0,0.25);
-  --logo-filter: brightness(0) invert(1);
+  --theme-bg-primary: #2A2A2A;
+  --theme-bg-secondary: #333333;
+  --theme-accent: #666666;
+  --theme-accent-hover: #777777;
+  --theme-accent-dark: #888888;
+  --theme-border: #404040;
+  --theme-text-primary: #E0E0E0;
+  --theme-text-secondary: #B0B0B0;
+  --theme-benefit: #A0A0A0;
+  --theme-box-shadow: rgba(0,0,0,0.15);
+  --theme-box-shadow-hover: rgba(0,0,0,0.2);
+  --logo-filter: brightness(0) invert(0.9);
   
   /* 카테고리 색상 - 다크 */
-  --category-food-cafe: #BB9AF7;
-  --category-life-convenience: #7AA2F7;
-  --category-health-beauty: #F7768E;
-  --category-etc: #9ECE6A;
+  --category-food-cafe: #808080;
+  --category-life-convenience: #707070;
+  --category-health-beauty: #909090;
+  --category-etc: #606060;
 }
 
 /* 공통 스타일 - 기본 요소 */
@@ -397,6 +397,11 @@ h5.text-secondary {
 [data-theme="dark"] .card {
   background-color: var(--theme-bg-secondary);
   border: 1px solid var(--theme-border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] .card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 [data-theme="dark"] .table {
@@ -446,31 +451,31 @@ h5.text-secondary {
 }
 
 [data-theme="dark"] .alert-warning {
-  background-color: rgba(247, 118, 142, 0.1);
-  border-color: rgba(247, 118, 142, 0.2);
+  background-color: rgba(128, 128, 128, 0.1);
+  border-color: rgba(128, 128, 128, 0.2);
   color: var(--theme-text-primary);
 }
 
 [data-theme="dark"] .btn-outline-secondary {
-  border-color: var(--theme-accent) !important;
-  color: var(--theme-accent) !important;
+  border-color: #707070 !important;
+  color: #B0B0B0 !important;
 }
 
 [data-theme="dark"] .btn-outline-secondary:hover {
-  background-color: var(--theme-accent) !important;
-  color: var(--theme-bg-primary) !important;
+  background-color: #707070 !important;
+  color: #E0E0E0 !important;
 }
 
 [data-theme="dark"] .badge {
-  background-color: var(--theme-accent) !important;
-  color: var(--theme-bg-primary) !important;
+  background-color: #707070 !important;
+  color: #E0E0E0 !important;
 }
 
 /* 다크모드에서 로고 컨테이너 추가 스타일 */
 [data-theme="dark"] .logo-container {
   background: linear-gradient(to right, 
-    rgba(30, 30, 46, 0.95), 
-    rgba(40, 40, 56, 0.95)
+    rgba(42, 42, 42, 0.95), 
+    rgba(51, 51, 51, 0.95)
   );
   border-bottom: 1px solid var(--theme-border);
 }
