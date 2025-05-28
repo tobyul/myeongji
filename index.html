@@ -14,6 +14,13 @@
     <link rel="stylesheet" href="common-style.css?ver=1.1">
 
     <script src="theme-loader.js" defer></script>
+
+    <style>
+        .card-theme {
+            background-color: var(--bs-card-bg) !important;
+            color: var(--bs-body-color) !important;
+        }
+    </style>
 </head>
 <body>
     <a href="index.html" style="text-decoration: none;">
@@ -218,7 +225,7 @@
             let badgeClass = 'bg-warning';
             
             const cardContent = `
-                <div class="card h-100 border-0 shadow-sm" style="background: var(--bs-body-bg)">
+                <div class="card h-100 border-0 shadow-sm card-theme">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
                             <span class="badge ${badgeClass} me-2">EVENT</span>
@@ -276,7 +283,7 @@
             }
             
             const cardContent = `
-                <div class="card h-100 border-0 shadow-sm">
+                <div class="card h-100 border-0 shadow-sm card-theme">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
                             <span class="badge ${badgeClass} me-2">NEW</span>
