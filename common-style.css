@@ -351,6 +351,29 @@ footer {
   overflow: hidden;
 }
 
+[data-theme="dark"] #recentStoresContainer .card {
+  background-color: var(--theme-bg-secondary);
+}
+
+[data-theme="dark"] #recentStoresContainer .card-title,
+[data-theme="dark"] #recentStoresContainer .card-text,
+[data-theme="dark"] #recentStoresContainer .text-muted {
+  color: var(--theme-text-primary) !important;
+}
+
+[data-theme="dark"] #recentStoresContainer .badge {
+  background-color: var(--theme-accent) !important;
+  color: var(--theme-bg-primary) !important;
+}
+
+[data-theme="dark"] #recentStoresContainer .text-danger {
+  color: var(--theme-benefit) !important;
+}
+
+[data-theme="dark"] #recentStoresContainer small {
+  color: var(--theme-text-secondary) !important;
+}
+
 /* 섹션 헤더 스타일 */
 h5.text-secondary {
   color: var(--theme-accent-dark) !important;
