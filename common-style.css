@@ -390,8 +390,9 @@ footer {
 
 [data-theme="dark"] #eventsStoresContainer .card,
 [data-theme="dark"] #recentStoresContainer .card {
-  background-color: #F5F5F5;
+  background: linear-gradient(145deg, #F5F5F5, #ECECEC);
   border: 1px solid #E0E0E0;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* 섹션 헤더 스타일 */
@@ -415,13 +416,14 @@ h5.text-secondary {
 
 /* 다크 테마 특수 처리 */
 [data-theme="dark"] .card {
-  background-color: var(--theme-bg-secondary);
+  background: linear-gradient(145deg, #2D2D2D, #333333);
   border: 1px solid var(--theme-border);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="dark"] .card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
 }
 
 [data-theme="dark"] .table {
@@ -471,8 +473,8 @@ h5.text-secondary {
 }
 
 [data-theme="dark"] .alert-warning {
-  background-color: rgba(128, 128, 128, 0.1);
-  border-color: rgba(128, 128, 128, 0.2);
+  background: linear-gradient(145deg, rgba(128, 128, 128, 0.08), rgba(128, 128, 128, 0.12));
+  border: 1px solid rgba(128, 128, 128, 0.2);
   color: var(--theme-text-primary);
 }
 
@@ -493,9 +495,20 @@ h5.text-secondary {
 
 /* 다크모드에서 로고 컨테이너 추가 스타일 */
 [data-theme="dark"] .logo-container {
-  background: linear-gradient(to right, 
-    rgba(42, 42, 42, 0.95), 
-    rgba(51, 51, 51, 0.95)
-  );
+  background: linear-gradient(145deg, #2A2A2A, #333333);
   border-bottom: 1px solid var(--theme-border);
+}
+
+/* 카드 호버 효과 개선 */
+[data-theme="dark"] #eventsStoresContainer .card:hover,
+[data-theme="dark"] #recentStoresContainer .card:hover {
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+}
+
+/* 알림창 그라데이션 추가 */
+[data-theme="dark"] .alert-warning {
+  background: linear-gradient(145deg, rgba(128, 128, 128, 0.08), rgba(128, 128, 128, 0.12));
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  color: var(--theme-text-primary);
 }
