@@ -7,6 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="common-style.css?ver=1.0">
+    
+    <!-- 카테고리 설정 로드 -->
+    <script src="categories.js"></script>
+    <script src="theme-loader.js"></script>
+    
     <style>
         .container {
             max-width: 600px;
@@ -58,7 +63,6 @@
             color: var(--theme-text-primary);
         }
     </style>
-    <script src="theme-loader.js"></script>
 </head>
 <body>
     <div class="container">
@@ -68,10 +72,7 @@
                 <label for="category" class="form-label required">카테고리</label>
                 <select class="form-select" id="category" name="category" required>
                     <option value="">선택하세요</option>
-                    <option value="음식/카페">음식/카페</option>
-                    <option value="생활/편의">생활/편의</option>
-                    <option value="건강/뷰티">건강/뷰티</option>
-                    <option value="기타">기타</option>
+                    <!-- JavaScript로 동적 생성됨 -->
                 </select>
             </div>
             <div class="mb-3">
@@ -106,12 +107,14 @@
                 <label for="site_url" class="form-label">웹사이트</label>
                 <input type="url" class="form-control" id="site_url" name="site_url">
             </div>
-            <label for="isUsed" class="form-label required">사용유무</label>
+            <div class="mb-3">
+                <label for="isUsed" class="form-label required">사용유무</label>
                 <select class="form-select" id="isUsed" name="isUsed" required>
                     <option value="">선택하세요</option>
                     <option value="Y">Y</option>
                     <option value="N">N</option>
                 </select>
+            </div>
             <div class="error-message" id="errorMessage"></div>
             <div class="d-flex justify-content-between mt-4">
                 <button type="button" class="btn btn-secondary" onclick="cancel()">취소</button>
@@ -131,8 +134,22 @@
         let mode = 'add';
         let storeId = null;
 
+        // 카테고리 옵션 동적 생성
+        function initCategorySelect() {
+            const select = document.getElementById('category');
+            CATEGORY_LIST.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                select.appendChild(option);
+            });
+        }
+
         // 페이지 로드 시 실행
         document.addEventListener('DOMContentLoaded', async () => {
+            // 카테고리 옵션 생성
+            initCategorySelect();
+            
             // 인증 확인
             if (!(await checkAuth())) {
                 redirectToLogin();

@@ -13,6 +13,8 @@
 
     <link rel="stylesheet" href="common-style.css?ver=1.4.2">
 
+    <!-- 카테고리 설정 로드 -->
+    <script src="categories.js"></script>
     <script src="theme-loader.js" defer></script>
 
     <style>
@@ -52,12 +54,8 @@
 
         <div class="row mb-3">
             <div class="col-12">
-                <div class="btn-group w-100" role="group">
-                    <button type="button" class="btn btn-outline-secondary category-btn active" data-category="전체">전체</button>
-                    <button type="button" class="btn btn-outline-secondary category-btn" data-category="음식/카페">음식/카페</button>
-                    <button type="button" class="btn btn-outline-secondary category-btn" data-category="생활/편의">생활/편의</button>
-                    <button type="button" class="btn btn-outline-secondary category-btn" data-category="건강/뷰티">건강/뷰티</button>
-                    <button type="button" class="btn btn-outline-secondary category-btn" data-category="기타">기타</button>
+                <div class="btn-group w-100" role="group" id="categoryButtons">
+                    <!-- JavaScript로 동적 생성됨 -->
                 </div>
             </div>
         </div>
@@ -129,7 +127,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
     
     <script>
-        let currentCategory = '전체';
+        let currentCategory = CATEGORIES.ALL;
         
         // 페이징 관련 변수 추가
         const itemsPerPage = 12;
@@ -279,20 +277,8 @@
             const card = document.createElement('div');
             card.className = 'col-12 col-md-4';
             
-            const cardClass = getCategoryColor(store.category);
-
-            // 카테고리에 따른 배지 색상 설정
-            let badgeClass = 'bg-primary'; // 기본값
-            
-            if (store.category === '음식/카페') {
-                badgeClass = 'bg-danger'; // 음식/카페 카테고리
-            } else if (store.category === '생활/편의') {
-                badgeClass = 'bg-primary'; // 생활/편의 카테고리
-            } else if (store.category === '건강/뷰티') {
-                badgeClass = 'bg-info'; // 건강/뷰티 카테고리
-            } else if (store.category === '기타') {
-                badgeClass = 'bg-success'; // 기타 카테고리
-            }
+            // 배지 색상을 헬퍼 함수로 가져오기
+            const badgeClass = getCategoryBadgeColor(store.category);
             
             const cardContent = `
                 <div class="card h-100 border-0 shadow-sm card-theme">
@@ -367,16 +353,6 @@
             });
         }
 
-        function getCategoryColor(category) {
-            const categoryClasses = {
-                '음식/카페': 'category-food-cafe',
-                '생활/편의': 'category-life-convenience', 
-                '건강/뷰티': 'category-health-beauty',
-                '기타': 'category-etc'
-            };
-            return categoryClasses[category] || '';
-        }
-
         // 행사 중인 업체 불러오기
         async function fetchEventStores() {
             try {
@@ -438,10 +414,10 @@
         }
 
         // fetchStores 함수 수정
-        function fetchStores(category = '전체', searchTerm = '') {
+        function fetchStores(category = CATEGORIES.ALL, searchTerm = '') {
             let url = 'https://gw.ecron.co.kr:81/api/stores';
             
-            if (category !== '전체' && !searchTerm) {
+            if (category !== CATEGORIES.ALL && !searchTerm) {
                 url = `https://gw.ecron.co.kr:81/api/stores/category?name=${encodeURIComponent(category)}`;
             } else if (searchTerm) {
                 url = `https://gw.ecron.co.kr:81/api/stores/search?term=${encodeURIComponent(searchTerm)}`;
@@ -599,16 +575,39 @@
             }
         }
 
-        // 카테고리 버튼 이벤트
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                currentCategory = this.dataset.category;
-                fetchStores(currentCategory);
+        // 카테고리 버튼 동적 생성 함수
+        function initCategoryButtons() {
+            const container = document.getElementById('categoryButtons');
+            
+            // 전체 버튼
+            const allBtn = document.createElement('button');
+            allBtn.type = 'button';
+            allBtn.className = 'btn btn-outline-secondary category-btn active';
+            allBtn.dataset.category = CATEGORIES.ALL;
+            allBtn.textContent = CATEGORIES.ALL;
+            container.appendChild(allBtn);
+            
+            // 각 카테고리 버튼
+            CATEGORY_LIST.forEach(category => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-outline-secondary category-btn';
+                btn.dataset.category = category;
+                btn.textContent = category;
+                container.appendChild(btn);
             });
-        });
+            
+            // 이벤트 리스너 등록
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentCategory = this.dataset.category;
+                    fetchStores(currentCategory);
+                });
+            });
+        }
 
         // 검색 버튼 이벤트
         document.getElementById('searchButton').addEventListener('click', () => {
@@ -626,6 +625,7 @@
 
         // 페이지 로드 시 초기 데이터 로드
         document.addEventListener('DOMContentLoaded', () => {
+            initCategoryButtons();  // 카테고리 버튼 생성
             fetchStores();
             fetchEventStores(); // 행사 중인 업체 로드
             fetchRecentStores(); // 최근 등록된 업체 로드
