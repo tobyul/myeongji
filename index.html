@@ -34,6 +34,15 @@
             border-color: var(--bs-warning-border-subtle) !important;
             color: var(--bs-warning-text) !important;
         }
+        /* 에디터로 저장된 HTML 콘텐츠 스타일 보정 */
+        .rich-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin: 4px 0;
+        }
+        .rich-content p { margin-bottom: 0.4rem; }
+        .rich-content ul, .rich-content ol { padding-left: 1.2rem; }
     </style>
 </head>
 <body>
@@ -64,35 +73,30 @@
             <!-- 동적으로 카드 추가될 영역 -->
         </div>
 
-        <!-- 페이지네이션 추가 -->
+        <!-- 페이지네이션 -->
         <div class="d-flex justify-content-center mt-4">
             <nav aria-label="Page navigation">
-                <ul class="pagination" id="pagination">
-                </ul>
+                <ul class="pagination" id="pagination"></ul>
             </nav>
         </div>
 
-        <!-- 이벤트 업체 섹션 추가 -->
+        <!-- 이벤트 업체 섹션 -->
         <div class="row mb-4 mt-4">
             <div class="col-12">
                 <h5 class="text-secondary mb-3">⭐ 행사점빵</h5>
-                <div class="row g-3" id="eventsStoresContainer">
-                    <!-- 행사 중인 업체 카드가 여기에 표시됩니다 -->
-                </div>
+                <div class="row g-3" id="eventsStoresContainer"></div>
             </div>
         </div>
 
-        <!-- 최근 등록된 업체 섹션 추가 -->
+        <!-- 최근 등록된 업체 섹션 -->
         <div class="row mb-4 mt-4">
             <div class="col-12">
                 <h5 class="text-secondary mb-3">🆕 신규점빵</h5>
-                <div class="row g-3" id="recentStoresContainer">
-                    <!-- 최근 등록된 업체 카드가 여기에 표시됩니다 -->
-                </div>
+                <div class="row g-3" id="recentStoresContainer"></div>
             </div>
         </div>
 
-        <!-- 방문자 수 통계 섹션 추가 -->
+        <!-- 방문자 수 통계 -->
         <div class="visitor-stats text-center mt-4 mb-4">
             <div class="card">
                 <div class="card-body">
@@ -112,7 +116,7 @@
         </div>
     </div>
 
-    <!-- Footer 추가 -->
+    <!-- Footer -->
     <footer class="bg-white py-3 mt-4">
         <div class="container text-center">
             <small class="text-muted">© 2025 삼정더베스트/록커. All Rights Reserved.</small>
@@ -122,229 +126,190 @@
         </div>
     </footer>
 
-    <!-- Bootstrap & Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
-    
+
     <script>
         let currentCategory = CATEGORIES.ALL;
-        
-        // 페이징 관련 변수 추가
         const itemsPerPage = 12;
         let currentPage = 1;
         let totalStores = [];
 
-        // 지도 초기화 함수
+        // ── 지도 초기화 ──────────────────────────────────────────────────────────
         function initializeMap(mapId, address) {
-            // 지도 컨테이너가 보이는 상태일 때만 초기화
             const mapContainer = document.getElementById(mapId);
-            if (!mapContainer || mapContainer.querySelector('.map_canvas')) {
-                return; // 이미 초기화되었거나 컨테이너가 없는 경우
-            }
-            
-            // 지도 초기화 전 로딩 표시
+            if (!mapContainer || mapContainer.querySelector('.map_canvas')) return;
+
             mapContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-            
-            // 약간의 지연 후 지도 초기화 (DOM이 완전히 렌더링되도록)
+
             setTimeout(() => {
                 try {
-                    const options = {
+                    const map = new kakao.maps.Map(mapContainer, {
                         center: new kakao.maps.LatLng(33.450701, 126.570667),
                         level: 3
-                    };
-                    
-                    const map = new kakao.maps.Map(mapContainer, options);
-                    
-                    // 주소-좌표 변환 객체 생성
+                    });
                     const geocoder = new kakao.maps.services.Geocoder();
-
-                    // 주소로 좌표 검색
                     geocoder.addressSearch(address, function(result, status) {
                         if (status === kakao.maps.services.Status.OK) {
                             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-                            // 마커 생성
-                            const marker = new kakao.maps.Marker({
-                                map: map,
-                                position: coords
-                            });
-
-                            // 지도 중심을 해당 위치로 이동
+                            new kakao.maps.Marker({ map, position: coords });
                             map.setCenter(coords);
                         } else {
                             mapContainer.innerHTML = '<div class="alert alert-warning">주소를 찾을 수 없습니다.</div>';
                         }
                     });
                 } catch (error) {
-                    console.error('지도 초기화 오류:', error);
                     mapContainer.innerHTML = '<div class="alert alert-danger">지도를 불러올 수 없습니다.</div>';
                 }
             }, 300);
         }
 
+        // ── HTML 안전 처리 (description 외 일반 텍스트용) ─────────────────────
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        // ── 메인 스토어 카드 생성 ────────────────────────────────────────────────
+        // description은 에디터 HTML이므로 innerHTML로 렌더링
+        // benefit 등 일반 필드는 white-space:pre-wrap 텍스트로 유지
         function createStoreCard(store) {
             const card = document.createElement('div');
             card.className = 'col-12 col-md-6 col-lg-4';
-            
             const mapId = `map-${store._id}`;
-            
-            const cardContent = `
+
+            card.innerHTML = `
                 <div class="card h-100">
                     <div class="card-header ${getCategoryColor(store.category)}" data-bs-toggle="collapse" 
                          data-bs-target="#store-${store._id}">
                         <div>
-                            <h5 class="card-title">${store.name}</h5>
-                            <small>${store.nickname}</small>
+                            <h5 class="card-title">${escapeHtml(store.name)}</h5>
+                            <small>${escapeHtml(store.nickname)}</small>
                         </div>
                         <i class="bi bi-chevron-down text-muted"></i>
                     </div>
                     <div id="store-${store._id}" class="collapse">
                         <div class="card-body">
-                            ${store.description ? `<p class="card-text"><strong>ℹ️</strong> <span style="white-space: pre-wrap;">${store.description}</span></p>` : ''}
-                            ${store.benefit ? `<p class="card-text"><strong>🎁</strong> <span class="benefit" style="white-space: pre-wrap;">${store.benefit}</span></p>` : ''}
-                            ${store.code ? `<p class="card-text"><strong>🔑</strong> <span class="text-success">${store.code}</span></p>` : ''}
-                            ${store.contact ? `<p class="card-text"><strong>📞</strong> ${store.contact}</p>` : ''}
-                            ${store.site_url ? `<p class="card-text"><strong>🌐</strong> <a href="${store.site_url}" target="_blank"> ${store.site_url}</a></p>` : ''}
-                            ${store.address ? `
-                                <p class="card-text"><strong>🚗</strong> ${store.address}</p>
-                                <div id="${mapId}" style="width:100%;height:200px;margin-top:10px;"></div>
-                            ` : ''}
+                            ${store.description
+                                ? `<div class="card-text mb-2"><strong>ℹ️</strong> <div class="rich-content ms-1">${store.description}</div></div>`
+                                : ''}
+                            ${store.benefit
+                                ? `<p class="card-text"><strong>🎁</strong> <span class="benefit" style="white-space: pre-wrap;">${escapeHtml(store.benefit)}</span></p>`
+                                : ''}
+                            ${store.code
+                                ? `<p class="card-text"><strong>🔑</strong> <span class="text-success">${escapeHtml(store.code)}</span></p>`
+                                : ''}
+                            ${store.contact
+                                ? `<p class="card-text"><strong>📞</strong> ${escapeHtml(store.contact)}</p>`
+                                : ''}
+                            ${store.site_url
+                                ? `<p class="card-text"><strong>🌐</strong> <a href="${escapeHtml(store.site_url)}" target="_blank">${escapeHtml(store.site_url)}</a></p>`
+                                : ''}
+                            ${store.address
+                                ? `<p class="card-text"><strong>🚗</strong> ${escapeHtml(store.address)}</p>
+                                   <div id="${mapId}" style="width:100%;height:200px;margin-top:10px;"></div>`
+                                : ''}
                         </div>
                     </div>
                 </div>
             `;
-            
-            card.innerHTML = cardContent;
 
-            // 주소가 있는 경우 지도 초기화
             if (store.address) {
-                // collapse 이벤트 발생 시 지도 초기화
-                card.querySelector(`[data-bs-target="#store-${store._id}"]`).addEventListener('click', function() {
-                    setTimeout(() => initializeMap(mapId, store.address), 100);
-                });
+                card.querySelector(`[data-bs-target="#store-${store._id}"]`)
+                    .addEventListener('click', () => setTimeout(() => initializeMap(mapId, store.address), 100));
             }
-            
+
             return card;
         }
 
+        // ── 이벤트 카드 생성 ─────────────────────────────────────────────────────
+        // event_content도 에디터 HTML이므로 innerHTML 렌더링
         function createEventStoreCard(store) {
             const card = document.createElement('div');
             card.className = 'col-12 col-md-4';
-            
-            // 배지 색상 설정 
-            let badgeClass = 'bg-warning';
-            
-            const cardContent = `
+            card.innerHTML = `
                 <div class="card h-100 border-0 shadow-sm card-theme">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
-                            <span class="badge ${badgeClass} me-2">EVENT</span>
-                            <h5 class="card-title mb-0">${store.name}</h5>
+                            <span class="badge bg-warning me-2">EVENT</span>
+                            <h5 class="card-title mb-0">${escapeHtml(store.name)}</h5>
                         </div>
-                        <h6 class="text-muted">${store.nickname}</h6>
-                        
-                        ${store.event_content ? 
-                            `<div class="alert alert-warning p-2 my-2">
-                                <strong>🎉 이벤트 </strong>
-                                <div class="event-content-box" style="white-space: pre-wrap;">${store.event_content}</div>
-                                <div class="small mt-1 text-muted">
-                                    ${new Date(store.start_date).toLocaleDateString()} ~ ${new Date(store.end_date).toLocaleDateString()}
-                                </div>
-                            </div>` 
+                        <h6 class="text-muted">${escapeHtml(store.nickname)}</h6>
+                        ${store.event_content
+                            ? `<div class="alert alert-warning p-2 my-2">
+                                   <strong>🎉 이벤트 </strong>
+                                   <div class="event-content-box rich-content">${store.event_content}</div>
+                                   <div class="small mt-1 text-muted">
+                                       ${new Date(store.start_date).toLocaleDateString()} ~ ${new Date(store.end_date).toLocaleDateString()}
+                                   </div>
+                               </div>`
                             : ''}
-                        
-                        ${store.benefit ? 
-                            `<p class="card-text small"><span class="text-danger">혜택: ${store.benefit}</span></p>` 
+                        ${store.benefit
+                            ? `<p class="card-text small"><span class="text-danger">혜택: ${escapeHtml(store.benefit)}</span></p>`
                             : ''}
-                        
                         <div class="text-end mt-2">
-                            <button class="btn btn-sm btn-outline-secondary view-details" 
-                               data-store-id="${store._id}">자세히 보기</button>
+                            <button class="btn btn-sm btn-outline-secondary view-details" data-store-id="${store._id}">자세히 보기</button>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent border-top">
-                        <i class="bi bi-tag"></i> ${store.category}
+                        <i class="bi bi-tag"></i> ${escapeHtml(store.category)}
                     </div>
                 </div>
             `;
-            
-            card.innerHTML = cardContent;
             return card;
         }
 
-        // 최근 등록된 업체용 카드 생성 함수
+        // ── 최근 등록 카드 생성 ──────────────────────────────────────────────────
         function createRecentStoreCard(store) {
             const card = document.createElement('div');
             card.className = 'col-12 col-md-4';
-            
-            // 배지 색상을 헬퍼 함수로 가져오기
             const badgeClass = getCategoryBadgeColor(store.category);
-            
-            const cardContent = `
+            card.innerHTML = `
                 <div class="card h-100 border-0 shadow-sm card-theme">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
                             <span class="badge ${badgeClass} me-2">NEW</span>
-                            <h5 class="card-title mb-0">${store.name}</h5>
+                            <h5 class="card-title mb-0">${escapeHtml(store.name)}</h5>
                         </div>
-                        <h6 class="text-muted">${store.nickname}</h6>
-                        ${store.description ? 
-                            `<p class="card-text small" style="white-space: pre-wrap;">${store.description}</p>` 
+                        <h6 class="text-muted">${escapeHtml(store.nickname)}</h6>
+                        ${store.description
+                            ? `<div class="rich-content small mb-1">${store.description}</div>`
                             : ''}
-                        ${store.benefit ? 
-                            `<p class="card-text small" style="white-space: pre-wrap;"><span class="text-danger">혜택: ${store.benefit}</span></p>` 
+                        ${store.benefit
+                            ? `<p class="card-text small" style="white-space: pre-wrap;"><span class="text-danger">혜택: ${escapeHtml(store.benefit)}</span></p>`
                             : ''}
                         <div class="text-end mt-2">
-                            <button class="btn btn-sm btn-outline-secondary view-details" 
-                               data-store-id="${store._id}">자세히 보기</button>
+                            <button class="btn btn-sm btn-outline-secondary view-details" data-store-id="${store._id}">자세히 보기</button>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent text-muted small">
-                        <i class="bi bi-tag"></i> ${store.category}
+                        <i class="bi bi-tag"></i> ${escapeHtml(store.category)}
                     </div>
                 </div>
             `;
-            
-            card.innerHTML = cardContent;
-            
             return card;
         }
 
-        // 페이지가 모두 로드된 후 이벤트 리스너 등록하는 함수
+        // ── 자세히 보기 버튼 이벤트 등록 ────────────────────────────────────────
         function setupRecentStoreButtons() {
             document.querySelectorAll('.view-details').forEach(button => {
                 button.addEventListener('click', function() {
                     const storeId = this.getAttribute('data-store-id');
-                    
-                    // 해당 ID의 카드 찾기
                     const targetHeader = document.querySelector(`[data-bs-target="#store-${storeId}"]`);
-                    
+
                     if (targetHeader) {
-                        // 카드를 화면에 표시하기 위해 스크롤
                         targetHeader.scrollIntoView({ behavior: 'smooth' });
-                        
-                        // 0.5초 후 카드 펼치기
-                        setTimeout(() => {
-                            targetHeader.click();
-                        }, 500);
+                        setTimeout(() => targetHeader.click(), 500);
                     } else {
-                        // 현재 페이지에 없는 경우 전체 목록에서 검색
-                        const foundIndex = totalStores.findIndex(store => store._id == storeId);
-                        
+                        const foundIndex = totalStores.findIndex(s => s._id == storeId);
                         if (foundIndex >= 0) {
-                            // 해당 업체가 있는 페이지 계산 및 이동
-                            const pageNumber = Math.floor(foundIndex / itemsPerPage) + 1;
-                            renderPage(pageNumber);
+                            renderPage(Math.floor(foundIndex / itemsPerPage) + 1);
                             renderPagination();
-                            
-                            // 페이지 렌더링 후 약간의 지연을 두고 카드 찾기 및 클릭
                             setTimeout(() => {
                                 const card = document.querySelector(`[data-bs-target="#store-${storeId}"]`);
                                 if (card) {
                                     card.scrollIntoView({ behavior: 'smooth' });
-                                    setTimeout(() => {
-                                        card.click();
-                                    }, 500);
+                                    setTimeout(() => card.click(), 500);
                                 }
                             }, 300);
                         }
@@ -353,82 +318,58 @@
             });
         }
 
-        // 행사 중인 업체 불러오기
+        // ── 데이터 패치 ──────────────────────────────────────────────────────────
         async function fetchEventStores() {
             try {
-                // 임시로 사용할 행사 중인 업체 데이터 (API 엔드포인트가 생성되면 그것으로 대체)
-                // 실제로는 아래 URL을 서버의 이벤트 API 엔드포인트로 변경해야 합니다
-                const response = await fetch('https://reib.duckdns.org:3001/api/stores/events');
-                const eventStores = await response.json();
-                
+                const res = await fetch('https://reib.duckdns.org:3001/api/stores/events');
+                const eventStores = await res.json();
                 const container = document.getElementById('eventsStoresContainer');
                 container.innerHTML = '';
-                
+
                 if (eventStores.length === 0) {
-                    // 행사 중인 업체가 없을 경우 섹션 숨기기
                     container.closest('.row.mb-4.mt-4').style.display = 'none';
                     return;
                 }
-                
-                eventStores.forEach(store => {
-                    const storeCard = createEventStoreCard(store);
-                    container.appendChild(storeCard);
-                });
-                
-                // 버튼에 이벤트 리스너 등록 (기존 함수 재사용)
+                eventStores.forEach(store => container.appendChild(createEventStoreCard(store)));
                 setupRecentStoreButtons();
             } catch (error) {
                 console.error('행사 업체 조회 실패:', error);
-                // 오류 발생 시 섹션 숨기기
                 document.getElementById('eventsStoresContainer').closest('.row.mb-4.mt-4').style.display = 'none';
             }
         }
 
-        // 최근 등록된 업체 불러오기
         async function fetchRecentStores() {
             try {
-                const response = await fetch('https://reib.duckdns.org:3001/api/stores/recent?limit=3');
-                const recentStores = await response.json();
-                
+                const res = await fetch('https://reib.duckdns.org:3001/api/stores/recent?limit=3');
+                const recentStores = await res.json();
                 const container = document.getElementById('recentStoresContainer');
                 container.innerHTML = '';
-                
+
                 if (recentStores.length === 0) {
-                    // 최근 등록된 업체가 없을 경우 섹션 숨기기
                     document.querySelector('.row.mb-4.mt-4').style.display = 'none';
                     return;
                 }
-                
-                recentStores.forEach(store => {
-                    const storeCard = createRecentStoreCard(store);
-                    container.appendChild(storeCard);
-                });
-                
-                // 버튼에 이벤트 리스너 등록
+                recentStores.forEach(store => container.appendChild(createRecentStoreCard(store)));
                 setupRecentStoreButtons();
             } catch (error) {
                 console.error('최근 업체 조회 실패:', error);
-                // 오류 발생 시 섹션 숨기기
                 document.querySelector('.row.mb-4.mt-4').style.display = 'none';
             }
         }
 
-        // fetchStores 함수 수정
         function fetchStores(category = CATEGORIES.ALL, searchTerm = '') {
             let url = 'https://reib.duckdns.org:3001/api/stores';
-            
             if (category !== CATEGORIES.ALL && !searchTerm) {
                 url = `https://reib.duckdns.org:3001/api/stores/category?name=${encodeURIComponent(category)}`;
             } else if (searchTerm) {
                 url = `https://reib.duckdns.org:3001/api/stores/search?term=${encodeURIComponent(searchTerm)}`;
             }
-
             fetch(url)
-                .then(response => response.json())
+                .then(r => r.json())
                 .then(stores => {
-                    totalStores = stores; // 전체 데이터 저장
-                    renderPage(1); // 첫 페이지 렌더링
-                    renderPagination(); // 페이지네이션 렌더링
+                    totalStores = stores;
+                    renderPage(1);
+                    renderPagination();
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -436,158 +377,107 @@
                 });
         }
 
-        // 페이지 렌더링 함수
+        // ── 페이지 렌더링 ────────────────────────────────────────────────────────
         function renderPage(pageNumber) {
             currentPage = pageNumber;
-            const startIndex = (pageNumber - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageStores = totalStores.slice(startIndex, endIndex);
-            
-            const container = document.getElementById('storeContainer');
+            const pageStores = totalStores.slice((pageNumber - 1) * itemsPerPage, pageNumber * itemsPerPage);
+            const container  = document.getElementById('storeContainer');
             container.innerHTML = '';
-            
-            pageStores.forEach(store => {
-                const storeCard = createStoreCard(store);
-                container.appendChild(storeCard);
-            });
+            pageStores.forEach(store => container.appendChild(createStoreCard(store)));
         }
 
-        // 페이지네이션 렌더링 함수
         function renderPagination() {
             const totalPages = Math.ceil(totalStores.length / itemsPerPage);
             const pagination = document.getElementById('pagination');
             pagination.innerHTML = '';
-            
-            if (totalPages > 1) {
-                const prevLi = document.createElement('li');
-                prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-                prevLi.innerHTML = `
-                    <a class="page-link text-secondary" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                `;
-                prevLi.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) {
-                        renderPage(currentPage - 1);
-                        renderPagination();
-                    }
-                });
-                pagination.appendChild(prevLi);
-            }
-            
+
+            if (totalPages <= 1) return;
+
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link text-secondary" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+            prevLi.addEventListener('click', e => {
+                e.preventDefault();
+                if (currentPage > 1) { renderPage(currentPage - 1); renderPagination(); }
+            });
+            pagination.appendChild(prevLi);
+
             for (let i = 1; i <= totalPages; i++) {
                 const li = document.createElement('li');
                 li.className = `page-item ${currentPage === i ? 'active' : ''}`;
                 li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-                li.addEventListener('click', (e) => {
+                li.addEventListener('click', e => {
                     e.preventDefault();
                     renderPage(i);
                     renderPagination();
                 });
                 pagination.appendChild(li);
             }
-            
-            if (totalPages > 1) {
-                const nextLi = document.createElement('li');
-                nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-                nextLi.innerHTML = `
-                    <a class="page-link text-secondary" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                `;
-                nextLi.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (currentPage < totalPages) {
-                        renderPage(currentPage + 1);
-                        renderPagination();
-                    }
-                });
-                pagination.appendChild(nextLi);
-            }
+
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link text-secondary" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+            nextLi.addEventListener('click', e => {
+                e.preventDefault();
+                if (currentPage < totalPages) { renderPage(currentPage + 1); renderPagination(); }
+            });
+            pagination.appendChild(nextLi);
         }
 
-        // 세션 ID 생성 함수
+        // ── 방문자 ────────────────────────────────────────────────────────────────
         function generateSessionId() {
             return 'sess_' + Math.random().toString(36).substr(2, 9);
         }
 
-        // 방문 기록 함수만 수정
         async function logVisit() {
             let sessionId = sessionStorage.getItem('visitorSessionId');
             let lastActivityTime = sessionStorage.getItem('lastActivityTime');
-            let isNewSession = false;  // 새 세션 여부를 추적
-
             const currentTime = Date.now();
-            const TIMEOUT = 30 * 60 * 1000; // 30분을 밀리초로 표현
+            const TIMEOUT = 30 * 60 * 1000;
 
-            // 새 세션이 필요한 경우:
-            // 1. 세션 ID가 없거나
-            // 2. 마지막 활동 시간이 없거나
-            // 3. 마지막 활동으로부터 30분이 지났을 때
             if (!sessionId || !lastActivityTime || (currentTime - Number(lastActivityTime)) > TIMEOUT) {
                 sessionId = generateSessionId();
                 sessionStorage.setItem('visitorSessionId', sessionId);
+                sessionStorage.setItem('lastActivityTime', currentTime.toString());
 
-                isNewSession = true;  // 새 세션 생성됨
-            }
-
-            // 현재 시간을 마지막 활동 시간으로 업데이트
-            sessionStorage.setItem('lastActivityTime', currentTime.toString());
-
-            // 새 세션일 때만 로그 기록
-            if (isNewSession) {
                 try {
-                    const response = await fetch('https://reib.duckdns.org:3001/api/visitor/log', {
+                    const res = await fetch('https://reib.duckdns.org:3001/api/visitor/log', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            sessionId: sessionId,
-                            pageUrl: window.location.href,
-                            userAgent: navigator.userAgent
-                        })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sessionId, pageUrl: window.location.href, userAgent: navigator.userAgent })
                     });
-
-                    if (!response.ok) {
-                        throw new Error('방문 기록 실패');
-                    }
-
-                    // 방문자 수 즉시 갱신
+                    if (!res.ok) throw new Error('방문 기록 실패');
                     await displayVisitorCount();
                 } catch (error) {
                     console.error('방문 기록 실패:', error);
                 }
+            } else {
+                sessionStorage.setItem('lastActivityTime', currentTime.toString());
             }
         }
 
-        // 방문자 수 표시 함수
         async function displayVisitorCount() {
             try {
-                const response = await fetch('https://reib.duckdns.org:3001/api/visitor/stats');
-                const stats = await response.json();
-                
-                document.getElementById('totalVisits').textContent = stats.total_visits;
+                const res = await fetch('https://reib.duckdns.org:3001/api/visitor/stats');
+                const stats = await res.json();
+                document.getElementById('totalVisits').textContent  = stats.total_visits;
                 document.getElementById('uniqueVisits').textContent = stats.unique_visits;
             } catch (error) {
                 console.error('통계 조회 실패:', error);
             }
         }
 
-        // 카테고리 버튼 동적 생성 함수
+        // ── 카테고리 버튼 ────────────────────────────────────────────────────────
         function initCategoryButtons() {
             const container = document.getElementById('categoryButtons');
-            
-            // 전체 버튼
+
             const allBtn = document.createElement('button');
             allBtn.type = 'button';
             allBtn.className = 'btn btn-outline-secondary category-btn active';
             allBtn.dataset.category = CATEGORIES.ALL;
             allBtn.textContent = CATEGORIES.ALL;
             container.appendChild(allBtn);
-            
-            // 각 카테고리 버튼
+
             CATEGORY_LIST.forEach(category => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
@@ -596,39 +486,31 @@
                 btn.textContent = category;
                 container.appendChild(btn);
             });
-            
-            // 이벤트 리스너 등록
+
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
-                    
                     currentCategory = this.dataset.category;
                     fetchStores(currentCategory);
                 });
             });
         }
 
-        // 검색 버튼 이벤트
+        // ── 검색 ─────────────────────────────────────────────────────────────────
         document.getElementById('searchButton').addEventListener('click', () => {
-            const searchTerm = document.getElementById('searchInput').value;
-            fetchStores(currentCategory, searchTerm);
+            fetchStores(currentCategory, document.getElementById('searchInput').value);
+        });
+        document.getElementById('searchInput').addEventListener('keypress', e => {
+            if (e.key === 'Enter') fetchStores(currentCategory, document.getElementById('searchInput').value);
         });
 
-        // Enter 키로 검색
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const searchTerm = document.getElementById('searchInput').value;
-                fetchStores(currentCategory, searchTerm);
-            }
-        });
-
-        // 페이지 로드 시 초기 데이터 로드
+        // ── DOMContentLoaded ──────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
-            initCategoryButtons();  // 카테고리 버튼 생성
+            initCategoryButtons();
             fetchStores();
-            fetchEventStores(); // 행사 중인 업체 로드
-            fetchRecentStores(); // 최근 등록된 업체 로드
+            fetchEventStores();
+            fetchRecentStores();
             logVisit();
             displayVisitorCount();
         });
