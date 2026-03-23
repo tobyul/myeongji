@@ -10,7 +10,7 @@
             }
             
             // 서버에서 최신 테마 가져오기
-            const response = await fetch('https://gw.ecron.co.kr:81/api/theme');
+            const response = await fetch('https://reib.duckdns.org:3001/api/theme');
             if (!response.ok) throw new Error('테마 로딩 실패');
             
             const data = await response.json();
@@ -61,7 +61,7 @@
         
         // 서버에 테마 저장
         try {
-            const response = await fetch('https://gw.ecron.co.kr:81/api/theme', {
+            const response = await fetch('https://reib.duckdns.org:3001/api/theme', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

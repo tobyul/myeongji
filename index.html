@@ -358,7 +358,7 @@
             try {
                 // 임시로 사용할 행사 중인 업체 데이터 (API 엔드포인트가 생성되면 그것으로 대체)
                 // 실제로는 아래 URL을 서버의 이벤트 API 엔드포인트로 변경해야 합니다
-                const response = await fetch('https://gw.ecron.co.kr:81/api/stores/events');
+                const response = await fetch('https://reib.duckdns.org:3001/api/stores/events');
                 const eventStores = await response.json();
                 
                 const container = document.getElementById('eventsStoresContainer');
@@ -387,7 +387,7 @@
         // 최근 등록된 업체 불러오기
         async function fetchRecentStores() {
             try {
-                const response = await fetch('https://gw.ecron.co.kr:81/api/stores/recent?limit=3');
+                const response = await fetch('https://reib.duckdns.org:3001/api/stores/recent?limit=3');
                 const recentStores = await response.json();
                 
                 const container = document.getElementById('recentStoresContainer');
@@ -415,12 +415,12 @@
 
         // fetchStores 함수 수정
         function fetchStores(category = CATEGORIES.ALL, searchTerm = '') {
-            let url = 'https://gw.ecron.co.kr:81/api/stores';
+            let url = 'https://reib.duckdns.org:3001/api/stores';
             
             if (category !== CATEGORIES.ALL && !searchTerm) {
-                url = `https://gw.ecron.co.kr:81/api/stores/category?name=${encodeURIComponent(category)}`;
+                url = `https://reib.duckdns.org:3001/api/stores/category?name=${encodeURIComponent(category)}`;
             } else if (searchTerm) {
-                url = `https://gw.ecron.co.kr:81/api/stores/search?term=${encodeURIComponent(searchTerm)}`;
+                url = `https://reib.duckdns.org:3001/api/stores/search?term=${encodeURIComponent(searchTerm)}`;
             }
 
             fetch(url)
@@ -538,7 +538,7 @@
             // 새 세션일 때만 로그 기록
             if (isNewSession) {
                 try {
-                    const response = await fetch('https://gw.ecron.co.kr:81/api/visitor/log', {
+                    const response = await fetch('https://reib.duckdns.org:3001/api/visitor/log', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -565,7 +565,7 @@
         // 방문자 수 표시 함수
         async function displayVisitorCount() {
             try {
-                const response = await fetch('https://gw.ecron.co.kr:81/api/visitor/stats');
+                const response = await fetch('https://reib.duckdns.org:3001/api/visitor/stats');
                 const stats = await response.json();
                 
                 document.getElementById('totalVisits').textContent = stats.total_visits;
