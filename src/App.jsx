@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { api, categories, safeHtml, themeOptions } from './api.js'
 
 const routeNow = () => `${location.hash || '#/'}`.slice(1) || '/'
@@ -110,9 +111,21 @@ function Home() {
 }
 
 function StoreCard({ store }) {
-  const [open, setOpen] = useState(false)
+  const [showDetails, setShowDetails] = useState(false)
   const thumb = store.description?.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1]?.replace('/uploads/', '/uploads/thumb/')
-  return <article className={`store-card ${open ? 'expanded' : ''}`}><button className="store-summary" onClick={() => setOpen(!open)} aria-expanded={open}><span className={`store-photo c-${categories.indexOf(store.category)}`}>{thumb ? <img className="store-thumb" src={thumb} alt={`${store.name} 사진`} loading="lazy" /> : <span aria-hidden="true">{icon[store.category] || '✦'}</span>}<span className="store-photo-label">{store.category || '이웃 가게'}</span></span><span className="store-title"><b>{store.name}</b><span className="store-owner">{store.nickname}</span>{store.benefit && <span className="store-benefit"><b>이웃 혜택</b> {store.benefit}</span>}{store.address && <span className="store-address">⌖ {store.address}</span>}</span><span className="store-open-label">{open ? '닫기 −' : '자세히 +'}</span></button>{open && <div className="store-detail">{store.description && <div className="rich-content" dangerouslySetInnerHTML={{ __html: safeHtml(store.description) }} />}{store.benefit && <p><b>이웃 혜택</b>{store.benefit}</p>}{store.code && <p><b>혜택 코드</b>{store.code}</p>}{store.contact && <p><b>연락처</b><a href={`tel:${store.contact}`}>{store.contact}</a></p>}{safeSiteUrl(store.site_url) && <p><b>웹사이트</b><a target="_blank" rel="noreferrer" href={safeSiteUrl(store.site_url)}>{store.site_url}</a></p>}{store.address && <p><b>주소</b>{store.address} <a target="_blank" rel="noreferrer" href={`https://map.kakao.com/link/search/${encodeURIComponent(store.address)}`}>지도 보기 ↗</a></p>}</div>}</article>
+  return <article className="store-card"><button className="store-summary" onClick={() => setShowDetails(true)} aria-haspopup="dialog"><span className={`store-photo c-${categories.indexOf(store.category)}`}>{thumb ? <img className="store-thumb" src={thumb} alt={`${store.name} 사진`} loading="lazy" /> : <span aria-hidden="true">{icon[store.category] || '✦'}</span>}<span className="store-photo-label">{store.category || '이웃 가게'}</span></span><span className="store-title"><b>{store.name}</b><span className="store-owner">{store.nickname}</span>{store.benefit && <span className="store-benefit"><b>이웃 혜택</b> {store.benefit}</span>}{store.address && <span className="store-address">⌖ {store.address}</span>}</span><span className="store-open-label">자세히 +</span></button>{showDetails && <StoreDetail store={store} photo={thumb} onClose={() => setShowDetails(false)} />}</article>
+}
+
+function StoreDetail({ store, photo, onClose }) {
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    const closeOnEscape = (event) => { if (event.key === 'Escape') onClose() }
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', closeOnEscape)
+    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', closeOnEscape) }
+  }, [onClose])
+  const description = photo ? store.description?.replace(/<img\b[^>]*>/i, '') : store.description
+  return createPortal(<div className="detail-backdrop" onClick={onClose}><section className="detail-modal" role="dialog" aria-modal="true" aria-labelledby={`store-detail-${store._id}`} onClick={event => event.stopPropagation()}><button className="detail-close" type="button" onClick={onClose} aria-label="상세 정보 닫기">×</button><div className="detail-modal-scroll">{photo && <div className="detail-cover"><img src={photo} alt={`${store.name} 매장 사진`} /></div>}<div className="detail-body"><div className="detail-heading"><span className="detail-category">{icon[store.category] || '✦'} {store.category || '이웃 가게'}</span><h2 id={`store-detail-${store._id}`}>{store.name}</h2>{store.nickname && <p>{store.nickname}</p>}</div>{(store.benefit || store.code) && <section className="detail-benefits"><span className="eyebrow">NEIGHBOR BENEFIT</span>{store.benefit && <p>{store.benefit}</p>}{store.code && <small>혜택 코드 <b>{store.code}</b></small>}</section>}{(store.contact || store.site_url || store.address) && <section className="detail-info-grid" aria-label="가게 정보">{store.contact && <div className="detail-info"><small>연락처</small><a href={`tel:${store.contact}`}>{store.contact}</a></div>}{safeSiteUrl(store.site_url) && <div className="detail-info"><small>웹사이트</small><a href={safeSiteUrl(store.site_url)} target="_blank" rel="noreferrer">웹사이트 방문 ↗</a></div>}{store.address && <div className="detail-info detail-address"><small>주소</small><span>{store.address}</span><a href={`https://map.kakao.com/link/search/${encodeURIComponent(store.address)}`} target="_blank" rel="noreferrer">카카오맵에서 길찾기 ↗</a></div>}</section>}{description && <section className="detail-description"><span className="eyebrow">ABOUT THE STORE</span><h3>가게 소개</h3><div className="rich-content" dangerouslySetInnerHTML={{ __html: safeHtml(description) }} /></section>}</div></div></section></div>, document.body)
 }
 
 function EventCard({ event }) {
