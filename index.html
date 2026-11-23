@@ -10,17 +10,17 @@
       (() => {
         const allowed = ['spring', 'summer', 'autumn', 'winter', 'dark'];
         const root = document.documentElement;
-        let cached = 'spring';
-        try {
-          cached = localStorage.getItem('current_theme') || 'spring';
-        } catch {}
-        if (!allowed.includes(cached)) cached = 'spring';
-        root.dataset.theme = cached;
+        // The API is the source of truth so every visitor sees the admin's theme.
+        root.dataset.theme = 'spring';
 
-        let released = false;
+        const applyTheme = (theme) => {
+          root.dataset.theme = theme;
+          try { localStorage.setItem('current_theme', theme); } catch {}
+          window.dispatchEvent(new CustomEvent('site-theme-change', { detail: theme }));
+        };
+
         const showApp = () => {
           root.removeAttribute('data-theme-loading');
-          released = true;
         };
         const timeout = setTimeout(showApp, 1200);
         fetch('https://reib.duckdns.org:3001/api/theme')
@@ -30,12 +30,7 @@
           })
           .then((rows) => {
             const theme = rows?.[0]?.theme;
-            if (allowed.includes(theme)) {
-              if (!released) root.dataset.theme = theme;
-              // Cache the server value for the next visit, but do not recolor a page
-              // that has already become visible after the startup timeout.
-              try { localStorage.setItem('current_theme', theme); } catch {}
-            }
+            if (allowed.includes(theme)) applyTheme(theme);
           })
           .catch(() => {})
           .finally(() => {

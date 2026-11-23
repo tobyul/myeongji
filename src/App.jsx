@@ -21,6 +21,11 @@ function App() {
     return () => removeEventListener('hashchange', change)
   }, [])
   useEffect(() => {
+    const syncTheme = (event) => setTheme(event.detail)
+    addEventListener('site-theme-change', syncTheme)
+    return () => removeEventListener('site-theme-change', syncTheme)
+  }, [])
+  useEffect(() => {
     const timer = setTimeout(() => setToast(''), 3500)
     return () => clearTimeout(timer)
   }, [toast])
