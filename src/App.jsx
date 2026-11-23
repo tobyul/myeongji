@@ -112,8 +112,9 @@ function Home() {
 
 function StoreCard({ store }) {
   const [showDetails, setShowDetails] = useState(false)
-  const thumb = store.description?.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1]?.replace('/uploads/', '/uploads/thumb/')
-  return <article className="store-card"><button className="store-summary" onClick={() => setShowDetails(true)} aria-haspopup="dialog"><span className={`store-photo c-${categories.indexOf(store.category)}`}>{thumb ? <img className="store-thumb" src={thumb} alt={`${store.name} 사진`} loading="lazy" /> : <span aria-hidden="true">{icon[store.category] || '✦'}</span>}<span className="store-photo-label">{store.category || '이웃 가게'}</span></span><span className="store-title"><b>{store.name}</b><span className="store-owner">{store.nickname}</span>{store.benefit && <span className="store-benefit"><b>이웃 혜택</b> {store.benefit}</span>}{store.address && <span className="store-address">⌖ {store.address}</span>}</span><span className="store-open-label">자세히 +</span></button>{showDetails && <StoreDetail store={store} photo={thumb} onClose={() => setShowDetails(false)} />}</article>
+  const sourcePhoto = store.description?.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1] || ''
+  const thumb = sourcePhoto.replace('/uploads/', '/uploads/thumb/')
+  return <article className="store-card"><button className="store-summary" onClick={() => setShowDetails(true)} aria-haspopup="dialog"><span className={`store-photo c-${categories.indexOf(store.category)}`}>{thumb ? <img className="store-thumb" src={thumb} alt={`${store.name} 사진`} loading="lazy" /> : <span aria-hidden="true">{icon[store.category] || '✦'}</span>}<span className="store-photo-label">{store.category || '이웃 가게'}</span></span><span className="store-title"><b>{store.name}</b><span className="store-owner">{store.nickname}</span>{store.benefit && <span className="store-benefit"><b>이웃 혜택</b> {store.benefit}</span>}{store.address && <span className="store-address">⌖ {store.address}</span>}</span><span className="store-open-label">자세히 +</span></button>{showDetails && <StoreDetail store={store} photo={sourcePhoto} onClose={() => setShowDetails(false)} />}</article>
 }
 
 function StoreDetail({ store, photo, onClose }) {
@@ -127,7 +128,47 @@ function StoreDetail({ store, photo, onClose }) {
     return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', closeOnEscape) }
   }, [onClose])
   const description = photo ? store.description?.replace(/<img\b[^>]*>/i, '') : store.description
-  return createPortal(<div className="detail-backdrop" onClick={onClose}><section className="detail-modal" role="dialog" aria-modal="true" aria-labelledby={`store-detail-${store._id}`} onClick={event => event.stopPropagation()}><button className="detail-close" type="button" onClick={onClose} aria-label="상세 정보 닫기">×</button><div ref={modalScroll} className="detail-modal-scroll">{photo && <div className="detail-cover"><img src={photo} alt={`${store.name} 매장 사진`} /></div>}<div className="detail-body"><div className="detail-heading"><span className="detail-category">{icon[store.category] || '✦'} {store.category || '이웃 가게'}</span><h2 id={`store-detail-${store._id}`}>{store.name}</h2>{store.nickname && <p>{store.nickname}</p>}</div>{(store.benefit || store.code) && <section className="detail-benefits"><span className="eyebrow">NEIGHBOR BENEFIT</span>{store.benefit && <p>{store.benefit}</p>}{store.code && <small>혜택 코드 <b>{store.code}</b></small>}</section>}{(store.contact || store.site_url || store.address) && <section className="detail-info-grid" aria-label="가게 정보">{store.contact && <div className="detail-info"><small>연락처</small><a href={`tel:${store.contact}`}>{store.contact}</a></div>}{safeSiteUrl(store.site_url) && <div className="detail-info"><small>웹사이트</small><a href={safeSiteUrl(store.site_url)} target="_blank" rel="noreferrer">웹사이트 방문 ↗</a></div>}{store.address && <div className="detail-info detail-address"><small>주소</small><span>{store.address}</span><a href={`https://map.kakao.com/link/search/${encodeURIComponent(store.address)}`} target="_blank" rel="noreferrer">카카오맵에서 길찾기 ↗</a></div>}</section>}{description && <section className="detail-description"><span className="eyebrow">ABOUT THE STORE</span><h3>가게 소개</h3><div className="rich-content" dangerouslySetInnerHTML={{ __html: safeHtml(description) }} /></section>}</div></div></section></div>, document.body)
+  return createPortal(<div className="detail-backdrop" onClick={onClose}><section className="detail-modal" role="dialog" aria-modal="true" aria-labelledby={`store-detail-${store._id}`} onClick={event => event.stopPropagation()}><button className="detail-close" type="button" onClick={onClose} aria-label="상세 정보 닫기">×</button><div ref={modalScroll} className="detail-modal-scroll">{photo && <div className="detail-cover"><img src={photo} alt={`${store.name} 매장 사진`} /></div>}<div className="detail-body"><div className="detail-heading"><span className="detail-category">ℹ️ {store.category || '이웃 가게'}</span><h2 id={`store-detail-${store._id}`}>{store.name}</h2>{store.nickname && <p>{store.nickname}</p>}</div>{(store.benefit || store.code) && <section className="detail-benefits">{store.benefit && <p><span aria-hidden="true">🎁</span> {store.benefit}</p>}{store.code && <p className="detail-code"><span aria-hidden="true">🔑</span> {store.code}</p>}</section>}{(store.contact || store.site_url || store.address) && <section className="detail-contacts" aria-label="가게 정보">{store.contact && <div className="detail-contact"><span aria-hidden="true">📞</span><a href={`tel:${store.contact}`}>{store.contact}</a></div>}{safeSiteUrl(store.site_url) && <div className="detail-contact"><span aria-hidden="true">🌐</span><a href={safeSiteUrl(store.site_url)} target="_blank" rel="noreferrer">{store.site_url}</a></div>}{store.address && <div className="detail-contact"><span aria-hidden="true">🚘</span><span>{store.address}</span></div>}</section>}{store.address && <KakaoMap address={store.address} />}{description && <section className="detail-description"><span className="eyebrow">ABOUT THE STORE</span><h3>가게 소개</h3><div className="rich-content" dangerouslySetInnerHTML={{ __html: safeHtml(description) }} /></section>}</div></div></section></div>, document.body)
+}
+
+const KAKAO_MAP_KEY = import.meta.env.VITE_KAKAO_MAP_KEY || '67015c72ec5b9ba4909f201cc8aa8601'
+let kakaoSdkPromise
+function loadKakaoMaps() {
+  if (window.kakao?.maps?.services) return Promise.resolve(window.kakao)
+  if (kakaoSdkPromise) return kakaoSdkPromise
+  kakaoSdkPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(KAKAO_MAP_KEY)}&libraries=services&autoload=false`
+    script.async = true
+    script.onload = () => window.kakao?.maps?.load ? window.kakao.maps.load(() => resolve(window.kakao)) : reject(new Error('카카오 지도를 초기화하지 못했습니다.'))
+    script.onerror = () => reject(new Error('카카오 지도를 불러오지 못했습니다.'))
+    document.head.appendChild(script)
+  })
+  return kakaoSdkPromise
+}
+
+function KakaoMap({ address }) {
+  const mapElement = useRef(null)
+  const [message, setMessage] = useState('지도 위치를 찾는 중이에요…')
+  useEffect(() => {
+    let cancelled = false
+    loadKakaoMaps().then(kakao => {
+      if (cancelled || !mapElement.current) return
+      const map = new kakao.maps.Map(mapElement.current, { center: new kakao.maps.LatLng(35.1, 129.0), level: 4 })
+      const geocoder = new kakao.maps.services.Geocoder()
+      geocoder.addressSearch(address, (result, status) => {
+        if (cancelled) return
+        if (status === kakao.maps.services.Status.OK) {
+          const point = new kakao.maps.LatLng(result[0].y, result[0].x)
+          new kakao.maps.Marker({ map, position: point })
+          map.setCenter(point)
+          setMessage('')
+        } else setMessage('지도에서 주소를 찾지 못했어요. 아래 버튼으로 위치를 확인해 주세요.')
+      })
+    }).catch(error => { if (!cancelled) setMessage(error.message) })
+    return () => { cancelled = true }
+  }, [address])
+  return <section className="store-map"><div className="map-heading"><b>📍 가게 위치</b><a href={`https://map.kakao.com/link/search/${encodeURIComponent(address)}`} target="_blank" rel="noreferrer">지도 앱에서 열기 ↗</a></div>{message && <p className="map-message">{message}</p>}<div ref={mapElement} className="kakao-map" aria-label={`지도: ${address}`} /></section>
 }
 
 function EventCard({ event }) {
