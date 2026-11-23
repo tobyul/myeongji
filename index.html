@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko" data-theme="spring" data-theme-loading>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f8f4" />
+    <meta name="description" content="명지 국제자유방 이웃점빵 - 우리 동네 가게와 혜택을 찾아보세요." />
+    <title>이웃점빵</title>
+    <script>
+      (() => {
+        const allowed = ['spring', 'summer', 'autumn', 'winter', 'dark'];
+        const root = document.documentElement;
+        let cached = 'spring';
+        try {
+          cached = localStorage.getItem('current_theme') || 'spring';
+        } catch {}
+        if (!allowed.includes(cached)) cached = 'spring';
+        root.dataset.theme = cached;
+
+        let released = false;
+        const showApp = () => {
+          root.removeAttribute('data-theme-loading');
+          released = true;
+        };
+        const timeout = setTimeout(showApp, 1200);
+        fetch('https://reib.duckdns.org:3001/api/theme')
+          .then((response) => {
+            if (!response.ok) throw new Error('Theme request failed');
+            return response.json();
+          })
+          .then((rows) => {
+            const theme = rows?.[0]?.theme;
+            if (allowed.includes(theme)) {
+              if (!released) root.dataset.theme = theme;
+              // Cache the server value for the next visit, but do not recolor a page
+              // that has already become visible after the startup timeout.
+              try { localStorage.setItem('current_theme', theme); } catch {}
+            }
+          })
+          .catch(() => {})
+          .finally(() => {
+            clearTimeout(timeout);
+            showApp();
+          });
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"><div class="boot-screen"><span class="boot-mark">이웃점빵</span><span class="boot-note">동네 가게를 불러오고 있어요</span></div></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
