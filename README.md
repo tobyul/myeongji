@@ -1,4 +1,4 @@
-# 이웃점빵 React (`myeongji2`)
+# 이웃점빵 React (`myeongji`)
 
 React + Vite front end for the existing neighborhood stores API.
 
@@ -13,9 +13,9 @@ Set `VITE_API_BASE_URL` in a local `.env` file to override the current API addre
 
 ## Build and GitHub Pages
 
-The Vite base path is `/myeongji2/`, matching `https://tobyul.github.io/myeongji2/`. Pushes to `main` build `dist/` and deploy it with GitHub Actions. In repository Settings → Pages, select **GitHub Actions** as the source. The published Pages site is public even when the source repository is private; private Pages access requires GitHub Enterprise Cloud.
+The Vite base path is `/myeongji/`, matching `https://tobyul.github.io/myeongji/`. Pushes to `main` build `dist/` and deploy it with GitHub Actions. In repository Settings → Pages, select **GitHub Actions** as the source. The published Pages site is public even when the source repository is private; private Pages access requires GitHub Enterprise Cloud.
 
-This project uses hash-based client navigation so direct navigation and refresh work on GitHub Pages without server rewrite rules. The current legacy `myeongji` site and its URL are not changed by this project.
+This project uses hash-based client navigation so direct navigation and refresh work on GitHub Pages without server rewrite rules. The previous site is archived as `tobyul/myeongji-old`.
 
 ## API security follow-up
 
