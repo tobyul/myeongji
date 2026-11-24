@@ -229,7 +229,8 @@ function EventList({ admin = false, go }) {
 }
 function Users({ notify }) {
   const [rows, setRows] = useState([]), [error, setError] = useState('')
-  const load = useCallback(() => api('/api/admin/users/all').then(setRows).catch(e => setError(e.message)), [])
+  // Block body: useEffect(load) must not get a Promise back, React would call it as cleanup on unmount and crash.
+  const load = useCallback(() => { api('/api/admin/users/all').then(setRows).catch(e => setError(e.message)) }, [])
   useEffect(load, [load])
   async function setStatus(id, status) { try { await api(`/api/admin/users/${id}/approve`, { method: 'POST', body: JSON.stringify({ status }) }); notify('회원 상태를 변경했어요.'); load() } catch (e) { notify(e.message) } }
   return <><PageTitle eyebrow="ADMIN / MEMBERS" title="회원 관리" text="가입 신청을 확인하고 회원 상태를 관리해요." />{error ? <div className="empty error">{error}</div> : <div className="table-wrap"><table><thead><tr><th>아이디</th><th>소개</th><th>상태</th><th>가입일</th><th>처리</th></tr></thead><tbody>{rows.map(u => <tr key={u.id}><td><b>{u.username}</b></td><td>{u.intro}</td><td><span className="status">{u.status}</span></td><td>{date(u.created_at)}</td><td className="button-row"><button className="button quiet small" onClick={() => setStatus(u.id, 'approved')}>승인</button><button className="button quiet small" onClick={() => setStatus(u.id, 'rejected')}>반려</button><button className="button quiet small" onClick={() => setStatus(u.id, 'suspended')}>정지</button></td></tr>)}</tbody></table></div>}</>
