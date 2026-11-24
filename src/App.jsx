@@ -59,6 +59,9 @@ function App() {
     if (route === '/') return <Home />
     if (route === '/login') return <Login go={go} notify={notify} onLogin={() => setAuth(readAuth())} />
     if (route === '/register') return <Register />
+    // UX only: the API still enforces auth; this just avoids showing empty admin shells.
+    if (!auth.token) return <Login go={go} notify={notify} onLogin={() => setAuth(readAuth())} />
+    if (['/stores', '/events', '/users'].includes(route) && auth.role !== 'admin') return <Dashboard auth={auth} go={go} />
     if (route === '/dashboard') return <Dashboard auth={auth} go={go} />
     if (route === '/stores') return <StoreList admin go={go} />
     if (route === '/my-stores') return <StoreList go={go} />
