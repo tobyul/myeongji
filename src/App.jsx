@@ -68,7 +68,7 @@ function App() {
   return <>
     <Header auth={auth} theme={theme} onTheme={changeTheme} onLogout={logout} />
     <main className="page-shell">{page}</main>
-    <footer className="footer"><a href="#/">이웃점빵</a><span>명지 국제자유방 · 우리 동네 가게를 응원합니다</span><a href="#/login">관리자</a></footer>
+    <footer className="footer"><div className="footer-brand"><a href="#/">이웃점빵</a><small>© 2025 삼정더베스트/록커. All Rights Reserved.</small></div><span>명지 국제자유방 · 우리 동네 가게를 응원합니다</span><a href="#/login">관리자</a></footer>
     {toast && <div className="toast" role="status">{toast}</div>}
   </>
 }
