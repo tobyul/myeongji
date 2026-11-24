@@ -26,6 +26,11 @@ function App() {
     return () => removeEventListener('site-theme-change', syncTheme)
   }, [])
   useEffect(() => {
+    const expired = () => { setAuth(readAuth()); setToast('로그인이 만료되었어요. 다시 로그인해 주세요.'); location.hash = '/login' }
+    addEventListener('auth-expired', expired)
+    return () => removeEventListener('auth-expired', expired)
+  }, [])
+  useEffect(() => {
     const timer = setTimeout(() => setToast(''), 3500)
     return () => clearTimeout(timer)
   }, [toast])
@@ -117,7 +122,7 @@ function Home() {
 
 function StoreCard({ store }) {
   const [showDetails, setShowDetails] = useState(false)
-  const sourcePhoto = store.description?.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1] || ''
+  const sourcePhoto = safeSiteUrl(store.description?.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1])
   const thumb = sourcePhoto.replace('/uploads/', '/uploads/thumb/')
   return <article className="store-card"><button className="store-summary" onClick={() => setShowDetails(true)} aria-haspopup="dialog"><span className={`store-photo c-${categories.indexOf(store.category)}`}>{thumb ? <img className="store-thumb" src={thumb} alt={`${store.name} 사진`} loading="lazy" /> : <span aria-hidden="true">{icon[store.category] || '✦'}</span>}<span className="store-photo-label">{store.category || '이웃 가게'}</span></span><span className="store-title"><b>{store.name}</b><span className="store-owner">{store.nickname}</span>{store.benefit && <span className="store-benefit"><b>이웃 혜택</b> {store.benefit}</span>}{store.address && <span className="store-address">⌖ {store.address}</span>}</span><span className="store-open-label">자세히 +</span></button>{showDetails && <StoreDetail store={store} photo={sourcePhoto} onClose={() => setShowDetails(false)} />}</article>
 }

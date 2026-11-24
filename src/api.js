@@ -16,10 +16,12 @@ export async function api(path, options = {}) {
   const body = type.includes('application/json') ? await response.json() : await response.text()
   if (!response.ok) {
     const message = typeof body === 'object' ? body.error || body.message : body
-    if (response.status === 401) {
+    // Only an expired/invalid session, not a wrong password on the login form (no token sent).
+    if (response.status === 401 && token) {
       localStorage.removeItem('auth_token')
       localStorage.removeItem('username')
       localStorage.removeItem('role')
+      window.dispatchEvent(new Event('auth-expired'))
     }
     throw new Error(message || `요청에 실패했습니다 (${response.status})`)
   }
