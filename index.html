@@ -23,7 +23,7 @@
           root.removeAttribute('data-theme-loading');
         };
         const timeout = setTimeout(showApp, 1200);
-        fetch('https://reib.duckdns.org:3001/api/theme')
+        fetch('__API_BASE__/api/theme')
           .then((response) => {
             if (!response.ok) throw new Error('Theme request failed');
             return response.json();

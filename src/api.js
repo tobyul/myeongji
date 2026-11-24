@@ -1,4 +1,4 @@
-export const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'https://reib.duckdns.org:3001').replace(/\/$/, '')
+export const API_BASE = import.meta.env.VITE_API_BASE_URL // set in vite.config.js
 
 export function getToken() {
   return localStorage.getItem('auth_token')
